@@ -11,10 +11,6 @@ import (
 
 const API_URL = "https://api.coinbase.com/v2/exchange-rates?currency=%s"
 
-type exchangeRatesData struct {
-	Data ExchangeRates `json:"data"`
-}
-
 type ExchangeRates struct {
 	Currency string            `json:"currency"`
 	Rates    map[string]string `json:"rates"`
@@ -52,7 +48,9 @@ func fetchExchangeRate(currency string) (*ExchangeRates, error) {
 
 	defer res.Body.Close()
 
-	var result exchangeRatesData
+	result := struct {
+		Data ExchangeRates
+	}{}
 
 	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
