@@ -1,6 +1,10 @@
 package helpers
 
-import "strings"
+import (
+	"strings"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 func ValidatePassword(password string) (bool, string) {
 	if !strings.ContainsAny(password, "1234567890") {
@@ -16,4 +20,12 @@ func ValidatePassword(password string) (bool, string) {
 		return false, "Password must be at most 255 characters long."
 	}
 	return true, ""
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return "", nil
+	}
+	return string(bytes), err
 }
