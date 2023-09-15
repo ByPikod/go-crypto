@@ -6,7 +6,7 @@ func ValidatePassword(password string) (bool, string) {
 	if !strings.ContainsAny(password, "1234567890") {
 		return false, "Password must contain at least one number."
 	}
-	if strings.ContainsAny(password, "abcdefghijklmnopqrstuvwxyzABCDEFGGHIJKLMNOPQRSTUVWXYZ") {
+	if !strings.ContainsAny(password, "abcdefghijklmnopqrstuvwxyzABCDEFGGHIJKLMNOPQRSTUVWXYZ") {
 		return false, "Password must contain at least one letter."
 	}
 	if len(password) < 8 {
