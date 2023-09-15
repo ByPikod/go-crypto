@@ -93,6 +93,7 @@ func (dbInfo *DBInfo) connect() (*gorm.DB, error) {
 	return db, nil
 }
 
+// Returns true if data exists in database.
 func CheckExistsInDatabase(dest interface{}, conds ...interface{}) (bool, error) {
 	res := DB.Model(dest).Where(dest, conds...).First(nil)
 	if res.Error == nil {
