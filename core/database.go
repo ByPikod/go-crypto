@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/ByPikod/go-crypto/helpers"
@@ -90,4 +91,15 @@ func (dbInfo *DBInfo) connect() (*gorm.DB, error) {
 
 	helpers.LogInfo("Established database connection.")
 	return db, nil
+}
+
+func CheckExistsInDatabase(dest interface{}, conds ...interface{}) (bool, error) {
+	res := DB.First(dest, conds...)
+	if res.Error == nil {
+		return true, nil // Query successfully executed and data found.
+	}
+	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+		return false, nil // Error says data doesnt exists in db
+	}
+	return false, res.Error // We don't know if it exists in db or not but an error occured.
 }
