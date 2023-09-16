@@ -27,7 +27,7 @@ func InitializeServer() {
 
 	user.Post("/register", middleware.Json, routes.Register)
 	user.Post("/login", middleware.Json, routes.Login)
-	user.Post("/me", routes.Register)
+	user.Get("/me", middleware.Auth, routes.Me)
 
 	// 404
 	App.Use(routes.NotFound)
