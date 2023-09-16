@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/ByPikod/go-crypto/helpers"
-	"github.com/ByPikod/go-crypto/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -21,15 +20,6 @@ func InitializeDatabase(dbInfo *DBInfo) {
 	if err != nil {
 		panic(err)
 	}
-
-	// Migration of the database
-	helpers.LogInfo("Migrating database.")
-	err = db.AutoMigrate(&models.User{})
-	if err != nil {
-		panic(err)
-	}
-
-	helpers.LogInfo("Migrating completed.")
 
 	DB = db
 }

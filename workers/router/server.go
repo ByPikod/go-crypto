@@ -26,7 +26,7 @@ func InitializeServer() {
 	api.Get("/exchange-rates", routes.ExchangeRates)
 
 	user.Post("/register", middleware.Json, routes.Register)
-	user.Post("/login", middleware.Json, routes.Register)
+	user.Post("/login", middleware.Json, routes.Login)
 	user.Post("/me", routes.Register)
 
 	// 404

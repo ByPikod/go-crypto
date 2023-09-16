@@ -8,7 +8,8 @@ import (
 )
 
 type Configuration struct {
-	Database *DBInfo
+	AuthSecret string
+	Database   *DBInfo
 }
 
 // DBInfo struct contains authentication information for the database.
@@ -43,7 +44,8 @@ func InitializeConfig() {
 	}
 
 	config := Configuration{
-		Database: &dbInfo,
+		AuthSecret: os.Getenv("AUTH_SECRET"),
+		Database:   &dbInfo,
 	}
 
 	Config = &config
