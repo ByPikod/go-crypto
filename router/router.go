@@ -16,7 +16,7 @@ func helloWorld(c *fiber.Ctx) error {
 	})
 }
 
-func InitializeServer() {
+func InitializeRouter() {
 	App = fiber.New()
 	api := App.Group("/api")
 	user := api.Group("/user")
