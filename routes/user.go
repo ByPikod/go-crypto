@@ -79,3 +79,9 @@ func Me(ctx *fiber.Ctx) error {
 		"mail":     user.Mail,
 	})
 }
+
+func Buy(ctx *fiber.Ctx) error {
+	// user := ctx.Locals("user").(*models.User)
+
+	return nil
+}

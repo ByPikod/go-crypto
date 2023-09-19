@@ -4,8 +4,8 @@ import (
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
+	"github.com/ByPikod/go-crypto/router"
 	"github.com/ByPikod/go-crypto/workers"
-	"github.com/ByPikod/go-crypto/workers/router"
 )
 
 func main() {
@@ -16,7 +16,11 @@ func main() {
 
 	// Migration of the database
 	helpers.LogInfo("Migrating database.")
-	err := core.DB.AutoMigrate(&models.User{})
+	err := core.DB.AutoMigrate(
+		&models.User{},
+		&models.Wallet{},
+		&models.TransactionHistory{},
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -24,5 +28,5 @@ func main() {
 	helpers.LogInfo("Migrating completed.")
 
 	go workers.InitializeExchangeRateWorker() // Start fetching exchange rate
-	router.InitializeServer()                 // Initialize http server and routes.
+	router.InitializeRouter()                 // Initialize http server and routes.
 }
