@@ -19,7 +19,7 @@ func main() {
 	err := core.DB.AutoMigrate(
 		&models.User{},
 		&models.Wallet{},
-		&models.TransactionHistory{},
+		&models.Transaction{},
 	)
 	if err != nil {
 		panic(err)

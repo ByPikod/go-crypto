@@ -18,20 +18,37 @@ func helloWorld(c *fiber.Ctx) error {
 
 func InitializeRouter() {
 	App = fiber.New()
-	api := App.Group("/api")
-	user := api.Group("/user")
-
-	// Handle API requests
 	App.Get("/", helloWorld)
-	api.Get("/exchange-rates", routes.ExchangeRates)
-
-	user.Post("/register", middleware.Json, routes.Register)
-	user.Post("/login", middleware.Json, routes.Login)
-	user.Get("/me", middleware.Auth, routes.Me)
+	apiRoutes(App)
 
 	// 404
 	App.Use(routes.NotFound)
 
 	// Listen
 	App.Listen(":80")
+}
+
+// Route: /api/
+func apiRoutes(parent fiber.Router) {
+	api := parent.Group("/api")
+	api.Get("/exchange-rates", routes.ExchangeRates)
+	userRoutes(api)
+}
+
+// Route: /api/user/
+func userRoutes(parent fiber.Router) {
+	user := parent.Group("/user")
+	user.Post("/register", middleware.Json, routes.Register)
+	user.Post("/login", middleware.Json, routes.Login)
+	user.Get("/me", middleware.Auth, routes.Me)
+	walletRoutes(user)
+}
+
+// Route: /api/user/wallet
+func walletRoutes(parent fiber.Router) {
+	wallet := parent.Group("/wallet", middleware.Auth, middleware.Json)
+	wallet.Get("/deposit", routes.Deposit)
+	wallet.Get("/buy", routes.Buy)
+	wallet.Get("/withdraw", routes.Withdraw)
+	wallet.Get("/sell", routes.Sell)
 }

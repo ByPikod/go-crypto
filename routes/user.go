@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/gofiber/fiber/v2"
 )
@@ -31,6 +32,7 @@ func Register(ctx *fiber.Ctx) error {
 
 	// An error occured
 	if err != nil {
+		helpers.LogError(err.Error())
 		return InternalServerError(ctx)
 	}
 
@@ -48,7 +50,7 @@ func Register(ctx *fiber.Ctx) error {
 func Login(ctx *fiber.Ctx) error {
 
 	// Parse payload
-	payload := models.UserLoginCredentials{}
+	payload := new(models.UserLoginPayload)
 	if err := ctx.BodyParser(&payload); err != nil {
 		return BadRequest(ctx, "Error: "+err.Error())
 	}
@@ -57,6 +59,7 @@ func Login(ctx *fiber.Ctx) error {
 	result, err := payload.Login()
 
 	if err != nil {
+		helpers.LogError(err.Error())
 		return InternalServerError(ctx)
 	}
 
@@ -78,10 +81,4 @@ func Me(ctx *fiber.Ctx) error {
 		"lastname": user.Lastname,
 		"mail":     user.Mail,
 	})
-}
-
-func Buy(ctx *fiber.Ctx) error {
-	// user := ctx.Locals("user").(*models.User)
-
-	return nil
 }

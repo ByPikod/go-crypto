@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/ByPikod/go-crypto/helpers"
@@ -12,6 +13,11 @@ import (
 const API_URL = "https://api.coinbase.com/v2/exchange-rates?currency=%s"
 
 type ExchangeRates struct {
+	Currency string             `json:"currency"`
+	Rates    map[string]float64 `json:"rates"`
+}
+
+type exchangeRatesParse struct {
 	Currency string            `json:"currency"`
 	Rates    map[string]string `json:"rates"`
 }
@@ -28,7 +34,14 @@ func GetExchangeRates() *ExchangeRates {
 // Use GetExchangeRates() function to get exchange rates.
 func InitializeExchangeRateWorker() {
 
-	for range time.Tick(time.Second * 5) {
+	exchangeRates, err := fetchExchangeRate("USD")
+	if err != nil {
+		helpers.LogError("Failed to fetch exchange rate: " + err.Error())
+	}
+
+	lastExchangeRates = exchangeRates
+
+	for range time.Tick(time.Second * 30) {
 		exchangeRates, err := fetchExchangeRate("USD")
 		if err != nil {
 			helpers.LogError("Failed to fetch exchange rate: " + err.Error())
@@ -49,7 +62,7 @@ func fetchExchangeRate(currency string) (*ExchangeRates, error) {
 	defer res.Body.Close()
 
 	result := struct {
-		Data ExchangeRates
+		Data exchangeRatesParse
 	}{}
 
 	err = json.NewDecoder(res.Body).Decode(&result)
@@ -57,5 +70,21 @@ func fetchExchangeRate(currency string) (*ExchangeRates, error) {
 		return nil, err
 	}
 
-	return &result.Data, nil
+	return parseExchanges(&result.Data)
+}
+
+// Parse string and convert it to float64
+func parseExchanges(exchangeRates *exchangeRatesParse) (*ExchangeRates, error) {
+	// parse floats
+	parsed := ExchangeRates{Rates: map[string]float64{}}
+	parsed.Currency = exchangeRates.Currency
+	for currency, rateToParse := range exchangeRates.Rates {
+		rate, err := strconv.ParseFloat(rateToParse, 64)
+		if err != nil {
+			return nil, err
+		}
+		parsed.Rates[currency] = rate
+	}
+	// return
+	return &parsed, nil
 }
