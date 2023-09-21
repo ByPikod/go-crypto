@@ -51,4 +51,5 @@ func walletRoutes(parent fiber.Router) {
 	wallet.Get("/buy", routes.Buy)
 	wallet.Get("/withdraw", routes.Withdraw)
 	wallet.Get("/sell", routes.Sell)
+	wallet.Get("/balance", routes.Balance)
 }

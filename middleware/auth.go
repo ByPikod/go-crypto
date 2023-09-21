@@ -52,8 +52,10 @@ func Auth(ctx *fiber.Ctx) error {
 	if err != nil {
 		return routes.Unauthorized(ctx, "Token signature verified, but claimed user not found.")
 	}
+	if user == nil {
+		return routes.Unauthorized(ctx, "User account removed or suspended!")
+	}
 
 	ctx.Locals("user", user)
-
 	return ctx.Next()
 }

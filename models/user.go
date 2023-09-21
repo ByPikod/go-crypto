@@ -11,5 +11,5 @@ type User struct {
 	Lastname string   `json:"lastName" gorm:"not null"`
 	Mail     string   `json:"mail" gorm:"index;not null;unique"`
 	Password string   `json:"password" gorm:"not null"`
-	Wallet   []Wallet `gorm:"foreignKey:UserID"`
+	Wallets  []Wallet `gorm:"foreignKey:UserID"`
 }

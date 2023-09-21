@@ -186,6 +186,7 @@ func (payload *User) Create() (map[string]interface{}, error) {
 
 // Returns wallet if it exists, creates and returns it if doesnt exists.
 func (user *User) GetOrCreateWallet(currency string) (*Wallet, error) {
+
 	// Query payload
 	wallet := Wallet{
 		Currency: currency,
@@ -212,10 +213,12 @@ func (user *User) GetOrCreateWallet(currency string) (*Wallet, error) {
 
 	// If wallet search was failed, return error
 	return nil, result.Error
+
 }
 
 // Returns wallet if it exists, returns nil if it doesnt.
 func (user *User) GetWallet(currency string) (*Wallet, error) {
+
 	// Query payload
 	wallet := Wallet{
 		Currency: currency,
@@ -228,6 +231,11 @@ func (user *User) GetWallet(currency string) (*Wallet, error) {
 		return &wallet, nil
 	}
 
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
 	// If wallet search was failed, return error
 	return nil, result.Error
+
 }
