@@ -39,26 +39,35 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 
 # Project Design
 
-## Folder Structure (Out-of-date)
+## Folder Structure
 ```py
 .
-├── core/ 
-│   ├── config.go   # Configuration
-│   ├── database.go # Database initialize and access
-│   └── server.go   # Start to listen HTTP requests
-├── logger/
-│   └── log.go      # Logging tools
-├── middleware/
-│   └── json.go     # Middleware for accepting JSON requests
-├── models/
-│   ├── base.go     # Database table base.
-│   └── user.go     # User table
-├── routes/
-│   ├── http-errors/         # Routes for HTTP errors (404, 403 ...) 
-│   ├── user/                # User endpoints
-│   └── exchange-rates.go    # List exchange rates.
-├── workers/    # Async tasks
-└── main.go     # Main file
+├── core # Core components
+│   ├── config.go # Environment variables
+│   └── database.go # Global DB utilities and DB connection
+├── helpers # Utilities
+│   ├── logger.go # Logging utilities
+│   └── password.go # Password hashing, validating etc.
+├── main.go # Launcher
+├── middleware # Middle functions between framework and routes.
+│   ├── auth.go # Checks if user is logged in
+│   └── json.go # Adds "accept json" header
+├── models # Database tables
+│   ├── transaction.go
+│   ├── transaction_service.go
+│   ├── user.go
+│   ├── user_service.go
+│   ├── wallet.go
+│   └── wallet_service.go
+├── routes
+│   ├── errors.go # Error codes such as 400, 401
+│   ├── exchanges.go # Exchange list end point
+│   ├── user.go # User related endpoints
+│   └── wallet.go # User wallet related endpoints
+└── workers # Each thread is a different worker.
+    ├── exchanges.go # Fetchs exchange rates from a public API with an interval.
+    └── router # HTTP Server
+        └── router.go
 ```
 
 ## Models
