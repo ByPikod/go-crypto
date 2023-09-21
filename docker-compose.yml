@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    ports:
+      - '5432:5432'
+    volumes: 
+      - postgres:/var/lib/postgresql/data
+  go-crypto:
+    build:
+      context: .  # The location of your Dockerfile (current directory in this case)
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+    environment:
+      AUTH_SECRET: 32f97916299787f211b5111e6da178b1
+      DB_HOST: "localhost"
+      DB_PORT: 5432
+      DB_USER: "postgres"
+      DB_PASS: "root"
+      DB_NAME: "gocrypto"
+volumes:
+  postgres:
+    driver: local

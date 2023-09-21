@@ -4,8 +4,8 @@ import (
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
-	"github.com/ByPikod/go-crypto/router"
 	"github.com/ByPikod/go-crypto/workers"
+	"github.com/ByPikod/go-crypto/workers/router"
 )
 
 func main() {
