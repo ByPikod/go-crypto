@@ -11,7 +11,7 @@ This is a prototype back-end of a crypto application that I developed for my int
 - [API Documentation](#api)
 - [Copyright](#copyright)
 
-#### Goal of the Project
+#### To-do List
 Prepare a prototype crypto wallet REST API and follow the rules below: 
 
 * [x] Respond HTTP requests with Fiber
@@ -25,6 +25,24 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Use JWT for the authentication.
 * [x] Implement the GORN auto migrate.
 
+# Installation
+
+**Requirements:**
+* [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04#step-1-installing-docker-compose)
+
+**Installation:**
+
+* Clone repository
+    > git clone https://www.github.com/ByPikod/go-crypto.git
+* Run docker-compose:
+    > docker-compose up
+
+    Optionally add "-d" arg to run at background
+
+    > docker-compose up -d    
+
+# Project Design
+
 #### Technologies Used
 * Must:
     * Go
@@ -36,8 +54,6 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * Optional:
     * Air
     * Postman
-
-# Project Design
 
 ## Folder Structure
 ```py
@@ -376,4 +392,8 @@ Auth required
 </details>
 
 # Copyright
-Copyright (c) 2023, [Yahya Batulu](https://www.yahyabatulu.com). Released under [MIT License](LICENSE)
+This project is licensed under the terms of the MIT License.
+
+You are free to use this project in compliance with the MIT License. If you decide to use, modify, or redistribute this software, you must include a copy of the original license and copyright notice in all copies or substantial portions of the software.
+
+For more information about the MIT License, visit: [MIT License](LICENSE).
