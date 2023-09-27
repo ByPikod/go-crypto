@@ -16,7 +16,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 
 * [x] Respond HTTP requests with Fiber
 * [x] Provide a better database interface with GORM.
-* [ ] Dockerize the project to avoid version conflicts.
+* [x] Dockerize the project to avoid version conflicts.
 * [ ] Use the following postgres normalization rules: 
     * [x] HasMany, 
     * [ ] HasOne, 
