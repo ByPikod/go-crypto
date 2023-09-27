@@ -6,6 +6,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type RegisterPaylaod struct {
+	Name     string `json:"name"`
+	Lastname string `json:"lastName"`
+	Mail     string `json:"mail"`
+	Password string `json:"password"`
+}
+
 // Register account
 // @Summary		Creates an account.
 // @Tags		user
@@ -21,12 +28,7 @@ import (
 func Register(ctx *fiber.Ctx) error {
 
 	// Parse payload
-	var payload struct {
-		Name     string `json:"name"`
-		Lastname string `json:"lastName"`
-		Mail     string `json:"mail"`
-		Password string `json:"password"`
-	}
+	payload := RegisterPaylaod{}
 	if err := ctx.BodyParser(&payload); err != nil {
 		return BadRequest(ctx)
 	}
