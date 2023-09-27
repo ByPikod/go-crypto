@@ -23,7 +23,9 @@ type exchangeRatesParse struct {
 }
 
 // Cached exchange rates
-var lastExchangeRates *ExchangeRates
+var (
+	lastExchangeRates *ExchangeRates
+)
 
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
 func GetExchangeRates() *ExchangeRates {

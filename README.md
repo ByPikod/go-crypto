@@ -391,6 +391,34 @@ Auth required
 ```
 </details>
 
+# Websocket
+
+<!-- Balance -->
+
+<details>
+<summary style="font-size: 1.5em;">
+<code>WS</code> <code>/ws/exchange-rates</code>
+</summary>
+
+##### Description    
+Returns exchange-rates as it changed.
+
+##### Response
+    
+```json
+{
+    "currency": "USD",
+    "rates": {
+        "00": 13.651877133105803,
+        "1INCH": 3.898635477582846,
+        "AAVE": 0.0159936025589764,
+        "ABT": 13.708019191226867,
+        "ACH": 64.1148938898506,
+        ...
+}
+```
+</details>
+
 # Copyright
 This project is licensed under the terms of the MIT License.
 

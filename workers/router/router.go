@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/routes"
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,12 +21,24 @@ func InitializeRouter() {
 	App = fiber.New()
 	App.Get("/", helloWorld)
 	apiRoutes(App)
+	wsRoutes(App)
 
 	// 404
 	App.Use(routes.NotFound)
 
 	// Listen
 	App.Listen(":80")
+}
+
+// Route: /ws/
+func wsRoutes(parent fiber.Router) {
+
+	ws := parent.Group("/ws")
+	ws.Use(middleware.WebSocket) // Returns "426" if upgrade not provided.
+
+	ws.Get("/exchange-rates", websocket.New(routes.WSExchangeRates))
+	go routes.WSExchangeBroadcaster() // Broadcast exchange data with an interval.
+
 }
 
 // Route: /api/
