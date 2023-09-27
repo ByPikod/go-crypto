@@ -8,6 +8,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary		Deposit
+// @Description Add balance to the user account.
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Param		amount			body		number	true	"Amount of money to deposit."	format(float)
+// @Success		200				{object}	interface{}
+// @Failure		401				{object}	interface{}
+// @Failure		400				{object}	interface{}
+// @Security 	ApiKeyAuth
+// @Router		/user/wallet/deposit [post]
 func Deposit(ctx *fiber.Ctx) error {
 
 	// Parse payload
@@ -44,6 +55,18 @@ func Deposit(ctx *fiber.Ctx) error {
 
 }
 
+// @Summary		Buy
+// @Description Buy a specific amount of crypto.
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Param		amount			body		number	true	"Amount of unit to buy."	format(float)
+// @Param		currency		body		string	true	"Currency to buy."
+// @Success		200				{object}	interface{}
+// @Failure		401				{object}	interface{}
+// @Failure		400				{object}	interface{}
+// @Security 	ApiKeyAuth
+// @Router		/user/wallet/buy [post]
 func Buy(ctx *fiber.Ctx) error {
 
 	// Parse payload
@@ -113,6 +136,17 @@ func Buy(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary		Withdraw
+// @Description Withdraw money from your account.
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Param		amount			body		number	true	"Amount of money to withdraw."	format(float)
+// @Success		200				{object}	interface{}
+// @Failure		401				{object}	interface{}
+// @Failure		400				{object}	interface{}
+// @Security 	ApiKeyAuth
+// @Router		/user/wallet/withdraw [post]
 func Withdraw(ctx *fiber.Ctx) error {
 
 	// Parse payload
@@ -150,6 +184,18 @@ func Withdraw(ctx *fiber.Ctx) error {
 
 }
 
+// @Summary		Sell
+// @Description Sell a specific amount of crypto.
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Param		amount			body		number	true	"Amount of unit to sell."	format(float)
+// @Param		currency		body		string	true	"Currency to sell."
+// @Success		200				{object}	interface{}
+// @Failure		401				{object}	interface{}
+// @Failure		400				{object}	interface{}
+// @Security 	ApiKeyAuth
+// @Router		/user/wallet/sell [post]
 func Sell(ctx *fiber.Ctx) error {
 
 	// Parse payload
@@ -228,6 +274,15 @@ func Sell(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary		Balance
+// @Description Retrieves the balance
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Success		200				{object}	interface{}
+// @Failure		401				{object}	interface{}
+// @Security 	ApiKeyAuth
+// @Router		/user/wallet/balance [get]
 func Balance(ctx *fiber.Ctx) error {
 
 	// Fetch wallets

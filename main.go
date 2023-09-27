@@ -8,6 +8,21 @@ import (
 	"github.com/ByPikod/go-crypto/workers/router"
 )
 
+// @title           Go Crypto
+// @version         1.0
+// @description     Simple crypto app back-end API for educational purposes.
+
+// @contact.name   API Support
+// @contact.url    http://github.com/ByPikod
+// @contact.email  admin@yahyabatulu.com
+
+// @license.name  MIT
+// @license.url   https://www.mit.edu/~amini/LICENSE.md
+
+// @host      localhost:80
+// @BasePath  /api/
+
+// @securityDefinitions.basic  BasicAuth
 func main() {
 	core.InitializeConfig() // Load configuration from environment variables
 

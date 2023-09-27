@@ -24,6 +24,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     * [ ] ManyToMany
 * [x] Use JWT for the authentication.
 * [x] Implement the GORN auto migrate.
+* [x] Documentize API with Swagger
 
 # Installation
 
@@ -51,6 +52,8 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     * JWT
     * Docker
     * Postgres
+    * Swagger
+    * Swaggo
 * Optional:
     * Air
     * Postman
@@ -68,6 +71,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 ├── middleware # Middle functions between framework and routes.
 │   ├── auth.go # Checks if user is logged in
 │   └── json.go # Adds "accept json" header
+│   └── websocket.go # Returns "upgraded needed" if request is not applicable with ws.
 ├── models # Database tables
 │   ├── transaction.go
 │   ├── transaction_service.go

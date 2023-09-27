@@ -12,7 +12,14 @@ var (
 	WSExchangeClients = make(map[*websocket.Conn]chan *workers.ExchangeRates)
 )
 
-// Handle api/exchange-rates endpoint.
+// @Summary		Exchange Rates
+// @Description List exchange rates
+// @Tags		wallet
+// @Accept		json
+// @Produce		json
+// @Success		200				{object}	workers.ExchangeRates
+// @Security 	ApiKeyAuth
+// @Router		/exchange-rates [get]
 func ExchangeRates(ctx *fiber.Ctx) error {
 	exchangeRates := workers.GetExchangeRates()
 	return ctx.Status(200).JSON(exchangeRates)
