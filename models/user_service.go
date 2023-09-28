@@ -239,3 +239,12 @@ func (user *User) GetWallet(currency string) (*Wallet, error) {
 	return nil, result.Error
 
 }
+
+// Fetch all the wallets user has.
+func (user *User) PreloadWallets() error {
+	res := core.DB.Preload("Wallets").Find(user)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
