@@ -84,10 +84,11 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 │   ├── wallet.go
 │   └── wallet_service.go
 ├── routes
-│   ├── errors.go # Error codes such as 400, 401
-│   ├── exchanges.go # Exchange list end point
-│   ├── user.go # User related endpoints
-│   └── wallet.go # User wallet related endpoints
+│   ├── errors.go       # Error codes such as 400, 401
+│   ├── exchanges.go    # Exchange list end point
+│   ├── user.go         # User related endpoints
+│   └── wallet.go       # User wallet related endpoints
+│   └── wallet_test.go  # Wallet endpoint unit tests
 └── workers # Each thread is a different worker.
     ├── exchanges.go # Fetchs exchange rates from a public API with an interval.
     └── router # HTTP Server
