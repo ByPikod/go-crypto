@@ -35,23 +35,20 @@ func GetExchangeRates() *ExchangeRates {
 // Initializes exchange rate worker and keep updates the lastExchangeRates variable.
 // Use GetExchangeRates() function to get exchange rates.
 func InitializeExchangeRateWorker() {
+	UpdateExchangeRate()
+	for range time.Tick(time.Second * 30) {
+		UpdateExchangeRate()
+	}
+}
 
+// Fetchs and updates exchange rate
+func UpdateExchangeRate() {
 	exchangeRates, err := fetchExchangeRate("USD")
 	if err != nil {
 		helpers.LogError("Failed to fetch exchange rate: " + err.Error())
 	}
 
 	lastExchangeRates = exchangeRates
-
-	for range time.Tick(time.Second * 30) {
-		exchangeRates, err := fetchExchangeRate("USD")
-		if err != nil {
-			helpers.LogError("Failed to fetch exchange rate: " + err.Error())
-		}
-
-		lastExchangeRates = exchangeRates
-	}
-
 }
 
 // Fetchs API and retrieves exchange rates data in the form of ExchangeRates struct.

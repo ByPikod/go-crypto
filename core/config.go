@@ -25,26 +25,32 @@ type DBInfo struct {
 // It will be nil if config haven't been initialized.
 var Config *Configuration
 
+func or(x string, y string) string {
+	if x == "" {
+		return y
+	}
+	return x
+}
+
 // Initializes config and makes Config variable above ready to use by loading environment variables.
 // ".env" is supported.
 func InitializeConfig() {
 
 	err := godotenv.Load()
 	if err != nil {
-		helpers.LogError(`An error occurred while loading environment variables.`)
-		panic(err)
+		helpers.LogError(`File ".env" not found or cannot parsed.`)
 	}
 
 	dbInfo := DBInfo{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASS"),
-		Database: os.Getenv("DB_NAME"),
+		Port:     or(os.Getenv("DB_PORT"), "5432"),
+		Host:     or(os.Getenv("DB_HOST"), "localhost"),
+		User:     or(os.Getenv("DB_USER"), "postgres"),
+		Password: or(os.Getenv("DB_PASS"), "root"),
+		Database: or(os.Getenv("DB_NAME"), "gocrypto"),
 	}
 
 	config := Configuration{
-		AuthSecret: os.Getenv("AUTH_SECRET"),
+		AuthSecret: or(os.Getenv("AUTH_SECRET"), "32f97916299787f211b5111e6da178b1"),
 		Database:   &dbInfo,
 	}
 
