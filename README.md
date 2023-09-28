@@ -25,6 +25,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Use JWT for the authentication.
 * [x] Implement the GORN auto migrate.
 * [x] Documentize API with Swagger
+* [x] Unit tests (at least one unit)
 
 # Installation
 
@@ -43,6 +44,9 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     > docker-compose up -d    
 
 # Project Design
+
+#### Dependencies
+![dependencies](promotions/dependencies.png)
 
 #### Technologies Used
 * Must:
