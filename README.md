@@ -20,7 +20,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [ ] Use the following postgres normalization rules: 
     * [x] HasMany, 
     * [ ] HasOne, 
-    * [ ] BelongsTo,
+    * [x] BelongsTo,
     * [ ] ManyToMany
 * [x] Use JWT for the authentication.
 * [x] Implement the GORN auto migrate.
@@ -105,7 +105,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
         Lastname string   `json:"lastName" gorm:"not null"`
         Mail     string   `json:"mail" gorm:"index;not null;unique"`
         Password string   `json:"password" gorm:"not null"`
-        Wallets  []Wallet `gorm:"foreignKey:UserID"` // Has Many
+        Wallets  []Wallet `gorm:"foreignKey:UserID"` // HasMany
     }
     ```
 
@@ -116,7 +116,8 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
         Currency    string        `json:"currency" gorm:"not null;index"`
         Balance     float64       `json:"balance" gorm:"default:0;not null"`
         UserID      uint          `json:"userID" gorm:"not null;index"`
-        Transaction []Transaction `gorm:"foreignKey:WalletID"` // Has Many
+        User        User          `gorm:"foreignKey:UserID"` // BelongsTo
+        Transaction []Transaction `gorm:"foreignKey:WalletID"` // HasMany
     }
     ```
 
@@ -128,6 +129,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
         Change   float64 `json:"change" gorm:"not null"`
         Balance  float64 `json:"balance" gorm:"not null"`
         WalletID uint    `json:"walletID" gorm:"not null;index"`
+        Wallet   Wallet  `gorm:"foreignKey:WalletID"` // BelongsTo
     }
     ```
 

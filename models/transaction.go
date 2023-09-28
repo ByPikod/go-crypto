@@ -8,6 +8,7 @@ type Transaction struct {
 	Change   float64 `json:"change" gorm:"not null"`
 	Balance  float64 `json:"balance" gorm:"not null"`
 	WalletID uint    `json:"walletID" gorm:"not null;index"`
+	Wallet   Wallet  `gorm:"foreignKey:WalletID"`
 }
 
 // Why do we have a "change" field instead of directly the price?
