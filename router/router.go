@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/routes"
 	"github.com/gofiber/contrib/websocket"
@@ -24,7 +25,7 @@ func InitializeRouter() {
 	wsRoutes(App)
 
 	// 404
-	App.Use(routes.NotFound)
+	App.Use(helpers.NotFound)
 
 	// Listen
 	App.Listen(":80")
