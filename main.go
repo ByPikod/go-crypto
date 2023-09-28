@@ -4,8 +4,8 @@ import (
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
+	"github.com/ByPikod/go-crypto/router"
 	"github.com/ByPikod/go-crypto/workers"
-	"github.com/ByPikod/go-crypto/workers/router"
 )
 
 // @title           Go Crypto
@@ -24,10 +24,21 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func main() {
-	core.InitializeConfig() // Load configuration from environment variables
+	// Initialize things router depend
+	initialize()
+	// Initialize http server and routes.
+	router.InitializeRouter()
+}
 
+// Initialize things router depend. Seperated for test files.
+func initialize() {
+
+	// Load configuration from environment variables
+	core.InitializeConfig()
+	helpers.LogInfo("Initialized config")
 	// Initialize database with config above
 	core.InitializeDatabase(core.Config.Database)
+	helpers.LogInfo("Initialized database")
 
 	// Migration of the database
 	helpers.LogInfo("Migrating database.")
@@ -42,6 +53,8 @@ func main() {
 
 	helpers.LogInfo("Migrating completed.")
 
-	go workers.InitializeExchangeRateWorker() // Start fetching exchange rate
-	router.InitializeRouter()                 // Initialize http server and routes.
+	// Start fetching exchange rate
+	go workers.InitializeExchangeRateWorker()
+	helpers.LogInfo("Initialized exchange worker.")
+
 }

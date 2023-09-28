@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/workers"
@@ -25,8 +24,13 @@ func Deposit(ctx *fiber.Ctx) error {
 	var payload struct {
 		Amount float64 `json:"amount"`
 	}
+
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx)
+		return helpers.BadRequest(ctx)
+	}
+
+	if payload.Amount == 0 {
+		return helpers.BadRequest(ctx)
 	}
 
 	// Retrieve wallet
@@ -34,7 +38,7 @@ func Deposit(ctx *fiber.Ctx) error {
 	wallet, err := user.GetOrCreateWallet("USD")
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Deposit
@@ -44,7 +48,7 @@ func Deposit(ctx *fiber.Ctx) error {
 	)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
@@ -75,14 +79,14 @@ func Buy(ctx *fiber.Ctx) error {
 		Amount   float64 `json:"amount"`
 	}
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx)
+		return helpers.BadRequest(ctx)
 	}
 
 	// Validate currency
 	exchanges := workers.GetExchangeRates()
 	exchange, ok := exchanges.Rates[payload.Currency]
 	if !ok {
-		return BadRequest(ctx, "Currency not found!")
+		return helpers.BadRequest(ctx, "Currency not found!")
 	}
 
 	neededUSDBalance := payload.Amount / exchange
@@ -92,7 +96,7 @@ func Buy(ctx *fiber.Ctx) error {
 	usdWallet, err := user.GetOrCreateWallet("USD")
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Validate balance
@@ -108,14 +112,14 @@ func Buy(ctx *fiber.Ctx) error {
 	buyCurrencyWallet, err := user.GetOrCreateWallet(payload.Currency)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Add transactions
 	sellTransaction, err := usdWallet.AddTransaction(models.TRANSACTION_TYPE_SELL, -neededUSDBalance)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 	buyTransaction, err := buyCurrencyWallet.AddTransaction(models.TRANSACTION_TYPE_BUY, payload.Amount)
 	if err != nil {
@@ -154,8 +158,12 @@ func Withdraw(ctx *fiber.Ctx) error {
 		Amount float64 `json:"amount"`
 	}
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx)
+		return helpers.BadRequest(ctx)
 	}
+	if payload.Amount == 0 {
+		return helpers.BadRequest(ctx)
+	}
+
 	payload.Amount = -payload.Amount
 
 	// Retrieve wallet
@@ -163,7 +171,7 @@ func Withdraw(ctx *fiber.Ctx) error {
 	wallet, err := user.GetOrCreateWallet("USD")
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Deposit
@@ -173,7 +181,7 @@ func Withdraw(ctx *fiber.Ctx) error {
 	)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
@@ -204,14 +212,14 @@ func Sell(ctx *fiber.Ctx) error {
 		Amount   float64 `json:"amount"`
 	}
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx)
+		return helpers.BadRequest(ctx)
 	}
 
 	// Validate currency
 	exchanges := workers.GetExchangeRates()
 	exchange, ok := exchanges.Rates[payload.Currency]
 	if !ok {
-		return BadRequest(ctx, "Currency not found!")
+		return helpers.BadRequest(ctx, "Currency not found!")
 	}
 
 	additionBalanceUSD := payload.Amount / exchange
@@ -221,7 +229,7 @@ func Sell(ctx *fiber.Ctx) error {
 	requestedWallet, err := user.GetWallet(payload.Currency)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 	if requestedWallet == nil {
 		return ctx.Status(200).JSON(fiber.Map{
@@ -246,14 +254,14 @@ func Sell(ctx *fiber.Ctx) error {
 	usdWallet, err := user.GetOrCreateWallet("USD")
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Add transactions
 	sellTransaction, err := requestedWallet.AddTransaction(models.TRANSACTION_TYPE_SELL, -payload.Amount)
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 	buyTransaction, err := usdWallet.AddTransaction(models.TRANSACTION_TYPE_BUY, additionBalanceUSD)
 	if err != nil {
@@ -287,10 +295,10 @@ func Balance(ctx *fiber.Ctx) error {
 
 	// Fetch wallets
 	user := ctx.Locals("user").(*models.User)
-	res := core.DB.Preload("Wallets").Find(user)
-	if res.Error != nil {
-		helpers.LogError(res.Error.Error())
-		return InternalServerError(ctx)
+	err := user.PreloadWallets()
+	if err != nil {
+		helpers.LogError(err.Error())
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Prepare response

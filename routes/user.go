@@ -30,7 +30,7 @@ func Register(ctx *fiber.Ctx) error {
 	// Parse payload
 	payload := RegisterPaylaod{}
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx)
+		return helpers.BadRequest(ctx)
 	}
 
 	// Process
@@ -46,7 +46,7 @@ func Register(ctx *fiber.Ctx) error {
 	// An error occured
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Bad request
@@ -74,7 +74,7 @@ func Login(ctx *fiber.Ctx) error {
 	// Parse payload
 	payload := new(models.UserLoginPayload)
 	if err := ctx.BodyParser(&payload); err != nil {
-		return BadRequest(ctx, "Error: "+err.Error())
+		return helpers.BadRequest(ctx, "Error: "+err.Error())
 	}
 
 	// Process
@@ -82,7 +82,7 @@ func Login(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		helpers.LogError(err.Error())
-		return InternalServerError(ctx)
+		return helpers.InternalServerError(ctx)
 	}
 
 	// Bad request
