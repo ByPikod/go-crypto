@@ -61,9 +61,9 @@ func userRoutes(parent fiber.Router) {
 // Route: /api/user/wallet
 func walletRoutes(parent fiber.Router) {
 	wallet := parent.Group("/wallet", middleware.Auth, middleware.Json)
-	wallet.Get("/deposit", routes.Deposit)
-	wallet.Get("/buy", routes.Buy)
-	wallet.Get("/withdraw", routes.Withdraw)
-	wallet.Get("/sell", routes.Sell)
+	wallet.Post("/deposit", routes.Deposit)
+	wallet.Post("/buy", routes.Buy)
+	wallet.Post("/withdraw", routes.Withdraw)
+	wallet.Post("/sell", routes.Sell)
 	wallet.Get("/balance", routes.Balance)
 }
