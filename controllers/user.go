@@ -1,16 +1,31 @@
-package routes
+package controllers
 
 import (
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
+	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
 )
 
-type RegisterPaylaod struct {
-	Name     string `json:"name"`
-	Lastname string `json:"lastName"`
-	Mail     string `json:"mail"`
-	Password string `json:"password"`
+type (
+	UserController struct {
+		service *services.UserService
+	}
+	RegisterPaylaod struct {
+		Name     string `json:"name"`
+		Lastname string `json:"lastName"`
+		Mail     string `json:"mail"`
+		Password string `json:"password"`
+	}
+	UserLoginPayload struct {
+		Mail     string `json:"mail"`
+		Password string `json:"password"`
+	}
+)
+
+// Create user repository
+func NewUserController(service *services.UserService) *UserController {
+	return &UserController{service: service}
 }
 
 // Register account
@@ -25,7 +40,7 @@ type RegisterPaylaod struct {
 // @Success		200				{object}	interface{}
 // @Failure		400				{object}	interface{}
 // @Router		/user/register	[post]
-func Register(ctx *fiber.Ctx) error {
+func (controller UserController) Register(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	payload := RegisterPaylaod{}
@@ -34,14 +49,12 @@ func Register(ctx *fiber.Ctx) error {
 	}
 
 	// Process
-	user := models.User{
-		Name:     payload.Name,
-		Lastname: payload.Lastname,
-		Mail:     payload.Mail,
-		Password: payload.Password,
-	}
-
-	result, err := user.Create()
+	result, err := controller.service.Create(
+		payload.Name,
+		payload.Lastname,
+		payload.Mail,
+		payload.Password,
+	)
 
 	// An error occured
 	if err != nil {
@@ -69,16 +82,16 @@ func Register(ctx *fiber.Ctx) error {
 // @Success		200				{object}	interface{}
 // @Failure		400				{object}	interface{}
 // @Router		/user/login		[post]
-func Login(ctx *fiber.Ctx) error {
+func (controller *UserController) Login(ctx *fiber.Ctx) error {
 
 	// Parse payload
-	payload := new(models.UserLoginPayload)
+	payload := new(UserLoginPayload)
 	if err := ctx.BodyParser(&payload); err != nil {
 		return helpers.BadRequest(ctx, "Error: "+err.Error())
 	}
 
 	// Process
-	result, err := payload.Login()
+	result, err := controller.service.Login(payload.Mail, payload.Password)
 
 	if err != nil {
 		helpers.LogError(err.Error())
@@ -103,7 +116,7 @@ func Login(ctx *fiber.Ctx) error {
 // @Failure		401				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/me		[get]
-func Me(ctx *fiber.Ctx) error {
+func (controller *UserController) Me(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 	return ctx.Status(200).JSON(fiber.Map{
 		"id":       user.ID,

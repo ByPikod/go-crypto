@@ -1,11 +1,20 @@
-package routes
+package controllers
 
 import (
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
-	"github.com/ByPikod/go-crypto/workers"
+	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
 )
+
+type WalletController struct {
+	service *services.WalletService
+}
+
+// Create new wallet controller
+func NewWalletController(service *services.WalletService) *WalletController {
+	return &WalletController{service: service}
+}
 
 // @Summary		Deposit
 // @Description Add balance to the user account.
@@ -18,7 +27,7 @@ import (
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/deposit [post]
-func Deposit(ctx *fiber.Ctx) error {
+func (walletController *WalletController) Deposit(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -71,7 +80,7 @@ func Deposit(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/buy [post]
-func Buy(ctx *fiber.Ctx) error {
+func (walletController *WalletController) Buy(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -151,7 +160,7 @@ func Buy(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/withdraw [post]
-func Withdraw(ctx *fiber.Ctx) error {
+func (walletController *WalletController) Withdraw(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -204,7 +213,7 @@ func Withdraw(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/sell [post]
-func Sell(ctx *fiber.Ctx) error {
+func (walletController *WalletController) Sell(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -291,7 +300,7 @@ func Sell(ctx *fiber.Ctx) error {
 // @Failure		401				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/balance [get]
-func Balance(ctx *fiber.Ctx) error {
+func (walletController *WalletController) Balance(ctx *fiber.Ctx) error {
 
 	// Fetch wallets
 	user := ctx.Locals("user").(*models.User)
