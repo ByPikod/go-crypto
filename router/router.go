@@ -27,6 +27,10 @@ func InitializeRouter() {
 
 	// Repositories
 	var (
+		// Exchange rates
+		exchangesRepository = repositories.NewExchangesRepository()
+		exchangesService    = services.NewExchangeService(exchangesRepository)
+		exchangesController = controllers.NewExchangesController(exchangesService)
 		// User
 		userRepository = repositories.NewUserRepository(core.DB)
 		userService    = services.NewUserService(userRepository)
@@ -34,11 +38,7 @@ func InitializeRouter() {
 		// Wallet
 		walletRepository = repositories.NewWalletRepository(core.DB)
 		walletService    = services.NewWalletService(walletRepository)
-		walletController = controllers.NewWalletController(walletService)
-		// Exchange rates
-		exchangesRepository = repositories.NewExchangesRepository()
-		exchangesService    = services.NewExchangeService(exchangesRepository)
-		exchangesController = controllers.NewExchangesController(exchangesService)
+		walletController = controllers.NewWalletController(walletService, exchangesService)
 	)
 
 	// REST Api

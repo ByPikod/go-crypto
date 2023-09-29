@@ -8,12 +8,19 @@ import (
 )
 
 type WalletController struct {
-	service *services.WalletService
+	service          *services.WalletService
+	exchangesService *services.ExchangesService
 }
 
 // Create new wallet controller
-func NewWalletController(service *services.WalletService) *WalletController {
-	return &WalletController{service: service}
+func NewWalletController(
+	service *services.WalletService,
+	exchangesService *services.ExchangesService,
+) *WalletController {
+	return &WalletController{
+		service:          service,
+		exchangesService: exchangesService,
+	}
 }
 
 // @Summary		Deposit
@@ -27,7 +34,7 @@ func NewWalletController(service *services.WalletService) *WalletController {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/deposit [post]
-func (walletController *WalletController) Deposit(ctx *fiber.Ctx) error {
+func (controller *WalletController) Deposit(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -80,7 +87,7 @@ func (walletController *WalletController) Deposit(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/buy [post]
-func (walletController *WalletController) Buy(ctx *fiber.Ctx) error {
+func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -92,8 +99,7 @@ func (walletController *WalletController) Buy(ctx *fiber.Ctx) error {
 	}
 
 	// Validate currency
-	exchanges := workers.GetExchangeRates()
-	exchange, ok := exchanges.Rates[payload.Currency]
+	exchange, ok := controller.exchangesService.GetCurrency(payload.Currency)
 	if !ok {
 		return helpers.BadRequest(ctx, "Currency not found!")
 	}
@@ -213,7 +219,7 @@ func (walletController *WalletController) Withdraw(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/sell [post]
-func (walletController *WalletController) Sell(ctx *fiber.Ctx) error {
+func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -225,8 +231,7 @@ func (walletController *WalletController) Sell(ctx *fiber.Ctx) error {
 	}
 
 	// Validate currency
-	exchanges := workers.GetExchangeRates()
-	exchange, ok := exchanges.Rates[payload.Currency]
+	exchange, ok := controller.exchangesService.GetCurrency(payload.Currency)
 	if !ok {
 		return helpers.BadRequest(ctx, "Currency not found!")
 	}
@@ -300,7 +305,7 @@ func (walletController *WalletController) Sell(ctx *fiber.Ctx) error {
 // @Failure		401				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/balance [get]
-func (walletController *WalletController) Balance(ctx *fiber.Ctx) error {
+func (controller *WalletController) Balance(ctx *fiber.Ctx) error {
 
 	// Fetch wallets
 	user := ctx.Locals("user").(*models.User)

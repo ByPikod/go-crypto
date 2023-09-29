@@ -5,7 +5,6 @@ import (
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/router"
-	"github.com/ByPikod/go-crypto/workers"
 )
 
 // @title           Go Crypto
@@ -52,9 +51,5 @@ func initialize() {
 	}
 
 	helpers.LogInfo("Migrating completed.")
-
-	// Start fetching exchange rate
-	go workers.InitializeExchangeRateWorker()
-	helpers.LogInfo("Initialized exchange worker.")
 
 }

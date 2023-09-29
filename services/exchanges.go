@@ -14,6 +14,18 @@ type (
 	}
 )
 
+// Broadcast the last exchange data to all the clients with an interval.
+func (service *ExchangesService) wsExchangeBroadcaster() {
+	// Wait
+	for range time.Tick(5 * time.Second) {
+		lastExchangeData := service.repository.GetExchangeRates()
+		// Broadcast the last exchange data to all the clients connected.
+		for _, ch := range service.clients {
+			ch <- lastExchangeData
+		}
+	}
+}
+
 // This will create a new exchange service and start to broadcast clients that added to service.
 func NewExchangeService(repository *repositories.ExchangesRepository) *ExchangesService {
 	service := &ExchangesService{
@@ -26,11 +38,16 @@ func NewExchangeService(repository *repositories.ExchangesRepository) *Exchanges
 }
 
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
-func (service *ExchangesService) GetExchangeRates() *repositories.ExchangeRates {
-	return service.repository.GetExchangeRates()
+func (service *ExchangesService) GetExchangeRates() (exchangeRates *repositories.ExchangeRates) {
+	exchangeRates = service.repository.GetExchangeRates()
+	return
 }
 
-func (service *ExchangesService) CurrencyExists
+// Returns the rate with "comma ok"
+func (service *ExchangesService) GetCurrency(currency string) (rate float64, ok bool) {
+	rate, ok = service.GetExchangeRates().Rates[currency]
+	return
+}
 
 // Add websocket client to the listeners
 func (service *ExchangesService) AddClient(client *websocket.Conn) chan *repositories.ExchangeRates {
@@ -45,16 +62,4 @@ func (service *ExchangesService) AddClient(client *websocket.Conn) chan *reposit
 func (service *ExchangesService) RemoveClient(client *websocket.Conn) {
 	close(service.clients[client])
 	delete(service.clients, client)
-}
-
-// Broadcast the last exchange data to all the clients with an interval.
-func (service *ExchangesService) wsExchangeBroadcaster() {
-	// Wait
-	for range time.Tick(5 * time.Second) {
-		lastExchangeData := service.repository.GetExchangeRates()
-		// Broadcast the last exchange data to all the clients connected.
-		for _, ch := range service.clients {
-			ch <- lastExchangeData
-		}
-	}
 }

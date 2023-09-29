@@ -29,6 +29,7 @@ func NewExchangesRepository() *ExchangesRepository {
 	}
 	// Start fetching data
 	go res.initializeExchangeRateUpdater()
+	fmt.Println("exchanges repository is initialized")
 	return res
 }
 
@@ -66,6 +67,7 @@ func (repo *ExchangesRepository) fetchExchangeRate(currency string) (*ExchangeRa
 		Currency: result.Data.Currency,
 		Rates:    parsedRates,
 	}, nil
+
 }
 
 // Parse string and convert it to float64
@@ -90,7 +92,7 @@ func (repo *ExchangesRepository) updateExchangeRate() {
 	if err != nil {
 		helpers.LogError("Failed to fetch exchange rate: " + err.Error())
 	}
-
+	fmt.Printf("update: %p\n", repo)
 	repo.lastExchangeData = exchangeRates
 }
 
@@ -105,5 +107,6 @@ func (repo *ExchangesRepository) initializeExchangeRateUpdater() {
 
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
 func (repo *ExchangesRepository) GetExchangeRates() *ExchangeRates {
+	fmt.Printf("get: %p\n", repo)
 	return repo.lastExchangeData
 }
