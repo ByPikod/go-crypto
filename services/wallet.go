@@ -6,7 +6,7 @@ import (
 )
 
 type WalletService struct {
-	repository *repositories.WalletRepository
+	repository repositories.IWalletRepository
 }
 
 // Create new wallet service

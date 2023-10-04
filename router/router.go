@@ -6,6 +6,7 @@ import (
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/ByPikod/go-crypto/services"
+	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -41,8 +42,20 @@ func InitializeRouter(db *gorm.DB) {
 		walletController = controllers.NewWalletController(walletService, exchangesService)
 	)
 
+	// Metrics
+	prometheus := fiberprometheus.New("metrics")
+	prometheus.RegisterAt(App, "/metrics")
+	App.Use(prometheus.Middleware)
+
 	// Middlewares
-	authMiddleware := middleware.NewAuthMiddleware(userService)
+	var (
+		authMiddleware = middleware.NewAuthMiddleware(userService)
+	)
+
+	// Websocket
+	ws := App.Group("/ws")
+	ws.Use(middleware.WebSocket) // Returns "426" if upgrade not provided.
+	ws.Get("/exchange-rates", websocket.New(exchangesController.WSExchangeRates))
 
 	// REST Api
 	api := App.Group("/api")
@@ -60,14 +73,9 @@ func InitializeRouter(db *gorm.DB) {
 	wallet.Post("/sell", walletController.Sell)
 	wallet.Get("/balance", walletController.Balance)
 
-	// Websocket
-	ws := App.Group("/ws")
-	ws.Use(middleware.WebSocket) // Returns "426" if upgrade not provided.
-	ws.Get("/exchange-rates", websocket.New(exchangesController.WSExchangeRates))
-
 	// 404
 	App.Use(helpers.NotFound)
 
 	// Listen
-	App.Listen(":80")
+	App.Listen(":8080")
 }

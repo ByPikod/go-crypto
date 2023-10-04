@@ -10,7 +10,7 @@ import (
 
 type (
 	UserService struct {
-		repository *repositories.UserRepository
+		repository repositories.IUserRepository
 	}
 	RegisterPaylaod struct {
 		Name     string `json:"name"`
@@ -49,7 +49,7 @@ func (service *UserService) Create(
 	}
 
 	// Check if mail address available in db
-	available, err := service.repository.CheckMailAvailable(mailAddress)
+	available, err := service.repository.IsMailAvailable(mailAddress)
 	if err != nil {
 		return nil, err
 	}

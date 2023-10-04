@@ -7,9 +7,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type WalletRepository struct {
-	db *gorm.DB
-}
+type (
+	WalletRepository struct {
+		db *gorm.DB
+	}
+
+	IWalletRepository interface {
+		GetWallet(userID uint, currency string) (*models.Wallet, error)
+		CreateWallet(wallet *models.Wallet) error
+		SaveWallet(wallet *models.Wallet) error
+		PreloadWallets(user *models.User) error
+		CreateTransaction(transaction *models.Transaction) error
+		RemoveTransactionByID(id uint) error
+	}
+)
 
 var (
 	ErrInvalidWallet          = errors.New("invalid wallet")
@@ -47,9 +58,7 @@ func (repository *WalletRepository) GetWallet(
 }
 
 // Creates a wallet.
-func (repository *WalletRepository) CreateWallet(
-	wallet *models.Wallet,
-) error {
+func (repository *WalletRepository) CreateWallet(wallet *models.Wallet) error {
 	return repository.db.Create(wallet).Error
 }
 

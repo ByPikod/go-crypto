@@ -8,9 +8,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepository struct {
-	db *gorm.DB
-}
+type (
+	UserRepository struct {
+		db *gorm.DB
+	}
+
+	IUserRepository interface {
+		Create(name string, lastname string, mailAddress string, password string) error
+		IsMailAvailable(mailAddress string) (bool, error)
+		GetUserByMail(mailAddress string) (*models.User, error)
+		GetUserById(id uint) (*models.User, error)
+	}
+)
 
 // Create user repository
 func NewUserRepository(db *gorm.DB) *UserRepository {
@@ -39,7 +48,7 @@ func (repo *UserRepository) Create(
 }
 
 // Returns true if mail is available, false otherwise.
-func (repo *UserRepository) CheckMailAvailable(mailAddress string) (bool, error) {
+func (repo *UserRepository) IsMailAvailable(mailAddress string) (bool, error) {
 	exists, err := helpers.CheckExistsInDatabase(repo.db, &models.User{Mail: mailAddress})
 	if err != nil {
 		return false, err
