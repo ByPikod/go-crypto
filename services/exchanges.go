@@ -9,7 +9,7 @@ import (
 
 type (
 	ExchangesService struct {
-		repository repositories.ExchangesRepository
+		repository *repositories.ExchangesRepository
 		clients    map[*websocket.Conn]chan *repositories.ExchangeRates
 	}
 )
@@ -29,7 +29,7 @@ func (service *ExchangesService) wsExchangeBroadcaster() {
 // This will create a new exchange service and start to broadcast clients that added to service.
 func NewExchangeService(repository *repositories.ExchangesRepository) *ExchangesService {
 	service := &ExchangesService{
-		repository: *repository,
+		repository: repository,
 		clients:    make(map[*websocket.Conn]chan *repositories.ExchangeRates),
 	}
 	// start broadcasting

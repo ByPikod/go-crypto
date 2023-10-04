@@ -1,6 +1,8 @@
 package services
 
-import "github.com/ByPikod/go-crypto/repositories"
+import (
+	"github.com/ByPikod/go-crypto/repositories"
+)
 
 type WalletService struct {
 	repository *repositories.WalletRepository
