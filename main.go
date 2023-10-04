@@ -23,25 +23,18 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func main() {
-	// Initialize things router depend
-	initialize()
-	// Initialize http server and routes.
-	router.InitializeRouter()
-}
-
-// Initialize things router depend. Seperated for test files.
-func initialize() {
 
 	// Load configuration from environment variables
 	core.InitializeConfig()
 	helpers.LogInfo("Initialized config")
+
 	// Initialize database with config above
-	core.InitializeDatabase(core.Config.Database)
+	db := core.InitializeDatabase(core.Config.Database)
 	helpers.LogInfo("Initialized database")
 
 	// Migration of the database
 	helpers.LogInfo("Migrating database.")
-	err := core.DB.AutoMigrate(
+	err := db.AutoMigrate(
 		&models.User{},
 		&models.Wallet{},
 		&models.Transaction{},
@@ -51,5 +44,8 @@ func initialize() {
 	}
 
 	helpers.LogInfo("Migrating completed.")
+
+	// Initialize http server and routes.
+	router.InitializeRouter(db)
 
 }

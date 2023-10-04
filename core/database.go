@@ -1,7 +1,6 @@
 package core
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/ByPikod/go-crypto/helpers"
@@ -9,19 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// It will be nil if the database haven't been initialized.
-var DB *gorm.DB
-
 // Initializes the database
 // Pointer receiver is the DBInfo object and can be accessed via core.Config.Database
-func InitializeDatabase(dbInfo *DBInfo) {
+func InitializeDatabase(dbInfo *DBInfo) *gorm.DB {
 	// Database configuration
 	db, err := dbInfo.connect()
 	if err != nil {
 		panic(err)
 	}
 
-	DB = db
+	return db
 }
 
 // Creates a connection to the database and returns the Database object.
@@ -81,16 +77,4 @@ func (dbInfo *DBInfo) connect() (*gorm.DB, error) {
 
 	helpers.LogInfo("Established database connection.")
 	return db, nil
-}
-
-// Returns true if data exists in database.
-func CheckExistsInDatabase(dest interface{}, conds ...interface{}) (bool, error) {
-	res := DB.Model(dest).Where(dest, conds...).First(nil)
-	if res.Error == nil {
-		return true, nil // Query successfully executed and data found.
-	}
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return false, nil // Error says data doesnt exists in db
-	}
-	return false, res.Error // We don't know if it exists in db or not but an error occured.
 }

@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/gofiber/fiber/v2"
 )
@@ -131,4 +132,8 @@ func (service *UserService) Login(mailAddress string, password string) (map[stri
 		"token":   token,
 	}, nil
 
+}
+
+func (service *UserService) GetUserById(id uint) (*models.User, error) {
+	return service.repository.GetUserById(id)
 }

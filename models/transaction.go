@@ -11,6 +11,14 @@ type Transaction struct {
 	Wallet   Wallet  `gorm:"foreignKey:WalletID"`
 }
 
+// Transaction types
+const (
+	TRANSACTION_TYPE_BUY      = -1
+	TRANSACTION_TYPE_SELL     = 1
+	TRANSACTION_TYPE_WITHDRAW = -2
+	TRANSACTION_TYPE_DEPOSIT  = 2
+)
+
 // Why do we have a "change" field instead of directly the price?
 // Simply, I don't want to make the change depend on the type of the transaction.
 // If we have the price itself, then we need to make the calculations for each transaction type.

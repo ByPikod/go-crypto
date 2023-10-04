@@ -51,14 +51,15 @@ func (controller *WalletController) Deposit(ctx *fiber.Ctx) error {
 
 	// Retrieve wallet
 	user := ctx.Locals("user").(*models.User)
-	wallet, err := user.GetOrCreateWallet("USD")
+	wallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
 
 	// Deposit
-	transaction, err := wallet.AddTransaction(
+	transaction, err := controller.service.AddTransaction(
+		wallet,
 		models.TRANSACTION_TYPE_DEPOSIT,
 		payload.Amount,
 	)
@@ -108,7 +109,7 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 
 	// Retrieve USD Wallet
-	usdWallet, err := user.GetOrCreateWallet("USD")
+	usdWallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
@@ -124,19 +125,29 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 		})
 	}
 
-	buyCurrencyWallet, err := user.GetOrCreateWallet(payload.Currency)
+	buyCurrencyWallet, err := controller.service.GetOrCreateWallet(user.ID, payload.Currency)
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
 
 	// Add transactions
-	sellTransaction, err := usdWallet.AddTransaction(models.TRANSACTION_TYPE_SELL, -neededUSDBalance)
+	sellTransaction, err := controller.service.AddTransaction(
+		usdWallet,
+		models.TRANSACTION_TYPE_SELL,
+		-neededUSDBalance,
+	)
+
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
-	buyTransaction, err := buyCurrencyWallet.AddTransaction(models.TRANSACTION_TYPE_BUY, payload.Amount)
+
+	buyTransaction, err := controller.service.AddTransaction(
+		buyCurrencyWallet,
+		models.TRANSACTION_TYPE_BUY,
+		payload.Amount,
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -166,7 +177,7 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 // @Failure		400				{object}	interface{}
 // @Security 	ApiKeyAuth
 // @Router		/user/wallet/withdraw [post]
-func (walletController *WalletController) Withdraw(ctx *fiber.Ctx) error {
+func (controller *WalletController) Withdraw(ctx *fiber.Ctx) error {
 
 	// Parse payload
 	var payload struct {
@@ -183,14 +194,15 @@ func (walletController *WalletController) Withdraw(ctx *fiber.Ctx) error {
 
 	// Retrieve wallet
 	user := ctx.Locals("user").(*models.User)
-	wallet, err := user.GetOrCreateWallet("USD")
+	wallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
 
 	// Deposit
-	transaction, err := wallet.AddTransaction(
+	transaction, err := controller.service.AddTransaction(
+		wallet,
 		models.TRANSACTION_TYPE_WITHDRAW,
 		payload.Amount,
 	)
@@ -240,7 +252,7 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 
 	// Retrieve requested currency wallet
-	requestedWallet, err := user.GetWallet(payload.Currency)
+	requestedWallet, err := controller.service.GetWallet(user.ID, payload.Currency)
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
@@ -265,19 +277,28 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 	}
 
 	// Retrieve USD Wallet
-	usdWallet, err := user.GetOrCreateWallet("USD")
+	usdWallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
 
 	// Add transactions
-	sellTransaction, err := requestedWallet.AddTransaction(models.TRANSACTION_TYPE_SELL, -payload.Amount)
+	sellTransaction, err := controller.service.AddTransaction(
+		requestedWallet,
+		models.TRANSACTION_TYPE_SELL,
+		-payload.Amount,
+	)
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)
 	}
-	buyTransaction, err := usdWallet.AddTransaction(models.TRANSACTION_TYPE_BUY, additionBalanceUSD)
+
+	buyTransaction, err := controller.service.AddTransaction(
+		usdWallet,
+		models.TRANSACTION_TYPE_BUY,
+		additionBalanceUSD,
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -309,7 +330,7 @@ func (controller *WalletController) Balance(ctx *fiber.Ctx) error {
 
 	// Fetch wallets
 	user := ctx.Locals("user").(*models.User)
-	err := user.PreloadWallets()
+	err := controller.service.LoadWallets(user)
 	if err != nil {
 		helpers.LogError(err.Error())
 		return helpers.InternalServerError(ctx)

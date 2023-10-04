@@ -6,12 +6,24 @@ import (
 
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
-	"github.com/ByPikod/go-crypto/models"
+	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func Auth(ctx *fiber.Ctx) error {
+type (
+	AuthMiddleware struct {
+		userService *services.UserService
+	}
+)
+
+func NewAuthMiddleware(userService *services.UserService) *AuthMiddleware {
+	return &AuthMiddleware{
+		userService: userService,
+	}
+}
+
+func (authMiddleware *AuthMiddleware) Auth(ctx *fiber.Ctx) error {
 	tokenString := ctx.Get("Authorization")
 
 	// If token not passed in header
@@ -48,7 +60,7 @@ func Auth(ctx *fiber.Ctx) error {
 	}
 
 	userID_uint := uint(math.Abs(float64(userID)))
-	user, err := models.GetUserById(userID_uint)
+	user, err := authMiddleware.userService.GetUserById(userID_uint)
 	if err != nil {
 		return helpers.Unauthorized(ctx, "Token signature verified, but claimed user not found.")
 	}

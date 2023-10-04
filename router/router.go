@@ -2,13 +2,13 @@ package router
 
 import (
 	"github.com/ByPikod/go-crypto/controllers"
-	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 var App *fiber.App
@@ -21,7 +21,7 @@ func helloWorld(c *fiber.Ctx) error {
 	})
 }
 
-func InitializeRouter() {
+func InitializeRouter(db *gorm.DB) {
 	App = fiber.New()
 	App.Get("/", helloWorld)
 
@@ -32,14 +32,17 @@ func InitializeRouter() {
 		exchangesService    = services.NewExchangeService(exchangesRepository)
 		exchangesController = controllers.NewExchangesController(exchangesService)
 		// User
-		userRepository = repositories.NewUserRepository(core.DB)
+		userRepository = repositories.NewUserRepository(db)
 		userService    = services.NewUserService(userRepository)
 		userController = controllers.NewUserController(userService)
 		// Wallet
-		walletRepository = repositories.NewWalletRepository(core.DB)
+		walletRepository = repositories.NewWalletRepository(db)
 		walletService    = services.NewWalletService(walletRepository)
 		walletController = controllers.NewWalletController(walletService, exchangesService)
 	)
+
+	// Middlewares
+	authMiddleware := middleware.NewAuthMiddleware(userService)
 
 	// REST Api
 	api := App.Group("/api")
@@ -48,9 +51,9 @@ func InitializeRouter() {
 	user := api.Group("/user")
 	user.Post("/register", middleware.Json, userController.Register)
 	user.Post("/login", middleware.Json, userController.Login)
-	user.Get("/me", middleware.Auth, userController.Me)
+	user.Get("/me", authMiddleware.Auth, userController.Me)
 
-	wallet := user.Group("/wallet", middleware.Auth, middleware.Json)
+	wallet := user.Group("/wallet", authMiddleware.Auth, middleware.Json)
 	wallet.Post("/deposit", walletController.Deposit)
 	wallet.Post("/buy", walletController.Buy)
 	wallet.Post("/withdraw", walletController.Withdraw)
