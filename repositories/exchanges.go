@@ -8,15 +8,16 @@ import (
 	"time"
 
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/models"
 )
 
 type (
-	ExchangeRates struct {
-		Currency string             `json:"currency"`
-		Rates    map[string]float64 `json:"rates"`
-	}
 	ExchangesRepository struct {
-		lastExchangeData *ExchangeRates
+		lastExchangeData *models.ExchangeRates
+	}
+
+	IExchangesRepository interface {
+		GetExchangeRates() *models.ExchangeRates
 	}
 )
 
@@ -33,7 +34,7 @@ func NewExchangesRepository() *ExchangesRepository {
 }
 
 // Fetchs API and retrieves exchange rates data in the form of ExchangeRates struct.
-func (repo *ExchangesRepository) fetchExchangeRate(currency string) (*ExchangeRates, error) {
+func (repo *ExchangesRepository) fetchExchangeRate(currency string) (*models.ExchangeRates, error) {
 
 	// Fetch
 	res, err := http.Get(fmt.Sprintf(API_URL, currency))
@@ -62,7 +63,7 @@ func (repo *ExchangesRepository) fetchExchangeRate(currency string) (*ExchangeRa
 		return nil, err
 	}
 
-	return &ExchangeRates{
+	return &models.ExchangeRates{
 		Currency: result.Data.Currency,
 		Rates:    parsedRates,
 	}, nil
@@ -104,6 +105,6 @@ func (repo *ExchangesRepository) initializeExchangeRateUpdater() {
 }
 
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
-func (repo *ExchangesRepository) GetExchangeRates() *ExchangeRates {
+func (repo *ExchangesRepository) GetExchangeRates() *models.ExchangeRates {
 	return repo.lastExchangeData
 }

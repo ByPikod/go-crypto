@@ -3,14 +3,15 @@ package services
 import (
 	"time"
 
+	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/gofiber/contrib/websocket"
 )
 
 type (
 	ExchangesService struct {
-		repository *repositories.ExchangesRepository
-		clients    map[*websocket.Conn]chan *repositories.ExchangeRates
+		repository repositories.IExchangesRepository
+		clients    map[*websocket.Conn]chan *models.ExchangeRates
 	}
 )
 
@@ -30,7 +31,7 @@ func (service *ExchangesService) wsExchangeBroadcaster() {
 func NewExchangeService(repository *repositories.ExchangesRepository) *ExchangesService {
 	service := &ExchangesService{
 		repository: repository,
-		clients:    make(map[*websocket.Conn]chan *repositories.ExchangeRates),
+		clients:    make(map[*websocket.Conn]chan *models.ExchangeRates),
 	}
 	// start broadcasting
 	go service.wsExchangeBroadcaster()
@@ -38,7 +39,7 @@ func NewExchangeService(repository *repositories.ExchangesRepository) *Exchanges
 }
 
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
-func (service *ExchangesService) GetExchangeRates() (exchangeRates *repositories.ExchangeRates) {
+func (service *ExchangesService) GetExchangeRates() (exchangeRates *models.ExchangeRates) {
 	exchangeRates = service.repository.GetExchangeRates()
 	return
 }
@@ -50,9 +51,9 @@ func (service *ExchangesService) GetCurrency(currency string) (rate float64, ok 
 }
 
 // Add websocket client to the listeners
-func (service *ExchangesService) AddClient(client *websocket.Conn) chan *repositories.ExchangeRates {
+func (service *ExchangesService) AddClient(client *websocket.Conn) chan *models.ExchangeRates {
 	// Create a channel to receive broadcasts
-	ch := make(chan *repositories.ExchangeRates)
+	ch := make(chan *models.ExchangeRates)
 	// Add client to the listeners
 	service.clients[client] = ch
 	return ch
