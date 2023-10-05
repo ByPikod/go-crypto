@@ -10,6 +10,7 @@ import (
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"gorm.io/gorm"
 )
 
@@ -52,6 +53,15 @@ func InitializeRouter(db *gorm.DB) {
 	var (
 		authMiddleware = middleware.NewAuthMiddleware(userService)
 	)
+
+	App.Use(cors.New(
+		cors.Config{
+			AllowHeaders:     "Origin, Content-Type, Accept, Content-Length, Accept-Language, Accept-Encoding, Connection, Access-Control-Allow-Origin",
+			AllowOrigins:     "*",
+			AllowCredentials: true,
+			AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		},
+	))
 
 	// Websocket
 	ws := App.Group("/ws")
