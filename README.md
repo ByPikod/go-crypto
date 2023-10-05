@@ -25,7 +25,8 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Use JWT for the authentication.
 * [x] Implement the GORN auto migrate.
 * [x] Documentize API with Swagger
-* [x] Unit tests (at least one unit)
+* [] Unit tests
+* [] Mocking
 * [x] Monitoring with Prometheus and Grafana
 
 # Installation
