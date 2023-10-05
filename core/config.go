@@ -10,6 +10,7 @@ import (
 type Configuration struct {
 	AuthSecret string
 	Database   *DBInfo
+	Host       string
 	Listen     string
 }
 
@@ -53,6 +54,7 @@ func InitializeConfig() {
 	config := Configuration{
 		AuthSecret: or(os.Getenv("AUTH_SECRET"), "32f97916299787f211b5111e6da178b1"),
 		Database:   &dbInfo,
+		Host:       or(os.Getenv("HOST"), "0.0.0.0"),
 		Listen:     or(os.Getenv("LISTEN"), "8080"),
 	}
 

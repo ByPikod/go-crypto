@@ -78,5 +78,5 @@ func InitializeRouter(db *gorm.DB) {
 	App.Use(helpers.NotFound)
 
 	// Listen
-	App.Listen(":" + core.Config.Listen)
+	App.Listen(core.Config.Host + ":" + core.Config.Listen)
 }
