@@ -10,6 +10,7 @@ import (
 type Configuration struct {
 	AuthSecret string
 	Database   *DBInfo
+	Listen     string
 }
 
 // DBInfo struct contains authentication information for the database.
@@ -52,6 +53,7 @@ func InitializeConfig() {
 	config := Configuration{
 		AuthSecret: or(os.Getenv("AUTH_SECRET"), "32f97916299787f211b5111e6da178b1"),
 		Database:   &dbInfo,
+		Listen:     or(os.Getenv("LISTEN"), "8080"),
 	}
 
 	Config = &config

@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/ByPikod/go-crypto/controllers"
+	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/repositories"
@@ -77,5 +78,5 @@ func InitializeRouter(db *gorm.DB) {
 	App.Use(helpers.NotFound)
 
 	// Listen
-	App.Listen(":8080")
+	App.Listen(":" + core.Config.Listen)
 }
