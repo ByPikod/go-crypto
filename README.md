@@ -39,6 +39,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [ ] Unit tests
 * [ ] Mocking
 * [x] Monitoring with Prometheus and Grafana
+* [ ] Load test
 
 # Installation
 
