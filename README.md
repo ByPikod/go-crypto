@@ -1,4 +1,12 @@
 ![Framework](promotions/fiber.png)
+
+![License](https://img.shields.io/github/license/ByPikod/go-crypto.svg?style=for-the-badge)
+![Maintaned](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)
+![Commits](https://img.shields.io/github/commits-since/ByPikod/go-crypto/latest.svg?style=for-the-badge)
+![Forks](https://img.shields.io/github/forks/ByPikod/go-crypto.svg?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/ByPikod/go-crypto.svg?style=for-the-badge)
+![Watchers](https://img.shields.io/github/watchers/ByPikod/go-crypto.svg?style=for-the-badge)
+
 # Introduction
 This is a prototype back-end of a crypto application that I developed for my internship. 
 
