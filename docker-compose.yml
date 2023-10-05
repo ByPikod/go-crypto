@@ -34,7 +34,6 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./data/grafana:/var/lib/grafana
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     depends_on:
@@ -46,6 +45,8 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=root
+    volumes:
+      - ./grafana.db:/var/lib/grafana/grafana.db
     depends_on:
       - prometheus
 volumes:

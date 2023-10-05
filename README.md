@@ -26,6 +26,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Implement the GORN auto migrate.
 * [x] Documentize API with Swagger
 * [x] Unit tests (at least one unit)
+* [x] Monitoring with Prometheus and Grafana
 
 # Installation
 
@@ -45,9 +46,6 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 
 # Project Design
 
-#### Dependencies
-![dependencies](promotions/dependencies.png)
-
 #### Technologies Used
 * Must:
     * Go
@@ -58,41 +56,56 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     * Postgres
     * Swagger
     * Swaggo
+    * Prometheus
+    * Grafana
 * Optional:
     * Air
     * Postman
 
+## Ports
+* Go Fiber: 8080
+* Prometheus: 9090
+* Grafana: 3000
+* Postgres: 5432
+
 ## Folder Structure
 ```py
 .
-├── core # Core components
-│   ├── config.go # Environment variables
-│   └── database.go # Global DB utilities and DB connection
-├── helpers # Utilities
-│   ├── logger.go # Logging utilities
-│   └── password.go # Password hashing, validating etc.
-├── main.go # Launcher
-├── middleware # Middle functions between framework and routes.
-│   ├── auth.go # Checks if user is logged in
-│   └── json.go # Adds "accept json" header
-│   └── websocket.go # Returns "upgraded needed" if request is not applicable with ws.
-├── models # Database tables
-│   ├── transaction.go
-│   ├── transaction_service.go
+├── controllers # Endpoints (aka Presentation layer)
+│   ├── exchanges.go
 │   ├── user.go
-│   ├── user_service.go
-│   ├── wallet.go
-│   └── wallet_service.go
-├── routes
-│   ├── errors.go       # Error codes such as 400, 401
-│   ├── exchanges.go    # Exchange list end point
-│   ├── user.go         # User related endpoints
-│   └── wallet.go       # User wallet related endpoints
-│   └── wallet_test.go  # Wallet endpoint unit tests
-└── workers # Each thread is a different worker.
-    ├── exchanges.go # Fetchs exchange rates from a public API with an interval.
-    └── router # HTTP Server
-        └── router.go
+│   └── wallet.go
+├── core # Core components
+│   ├── config.go # Retrieve environment variables
+│   └── database.go # Initialize database connection
+├── helpers # Utilities
+│   ├── database.go # Database utilities
+│   ├── errors.go # HTTP Errors (e.g 404, 403, 400)
+│   ├── logger.go # Logging functions
+│   ├── password.go # Password hashing, comparing
+│   ├── token.go # JWT utilities
+│   └── validate.go # Payload validations
+├── main.go
+├── middleware
+│   ├── auth.go # Authorization with JWT
+│   ├── json.go # Adds header accepts "application/json"
+│   ├── metrics.go # Monitoring
+│   └── websocket.go # Return error if websocket request missing upgrade header.
+├── models # Database & API models
+│   ├── exchanges.go
+│   ├── transaction.go
+│   ├── user.go
+│   └── wallet.go
+├── repositories # Repository layer (aka Persistance)
+│   ├── exchanges.go
+│   ├── user.go
+│   └── wallet.go
+├── router # Routes
+│   └── router.go
+└── services # Service layer (aka Bussiness layer)
+    ├── exchanges.go
+    ├── user.go
+    └── wallet.go
 ```
 
 ## Models
@@ -132,6 +145,19 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
         Wallet   Wallet  `gorm:"foreignKey:WalletID"` // BelongsTo
     }
     ```
+# Monitoring
+
+Prometheus and Grafana used for monitoring.
+
+Prometheus is a software that collects "metric" data from the http servers by requesting a specific endpoint at target servers at intervals you specified. The metric data is stored chronologically by the Prometheus. Data can be accessed via web interface or Rest API that Prometheus provides.
+
+![Prometheus web interface](promotions/prometheus.png)
+
+And Grafana is an open source analytics monitoring tool that provides bunch of visual components like (e.g charts, gauges). Grafana can have multiple data sources and Prometheus is one of them. Grafana can request to API of the Prometheus and visualize your chronologically stored metrics data.
+
+I've configured Prometheus to gather **default Go Metrics** from **Go Fiber** and visualized some of those metrics in Grafana as can be seen in the picture below:
+
+![monitoring](promotions/monitoring.png)
 
 # API
 
