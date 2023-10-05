@@ -1,13 +1,16 @@
+![Framework](promotions/fiber.png)
 # Introduction
 This is a prototype back-end of a crypto application that I developed for my internship. 
 
 #### Table of Contents
 - [Introduction](#introduction)
-    - [Goal of the Project](#goal-of-the-project)
-    - [Technologies Used](#technologies-used)
+    - [To-do List](#to-do-list)
 - [Project Design](#project-design)
+    - [Technologies](#technologies)
+    - [Ports](#ports)
     - [Folder Structure](#folder-structure)
     - [Models](#models)
+    - [Monitoring](#monitoring)
 - [API Documentation](#api)
 - [Copyright](#copyright)
 
@@ -47,7 +50,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 
 # Project Design
 
-#### Technologies Used
+## Technologies
 * Must:
     * Go
     * Gorn
