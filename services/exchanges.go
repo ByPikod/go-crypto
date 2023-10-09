@@ -28,7 +28,7 @@ func (service *ExchangesService) wsExchangeBroadcaster() {
 }
 
 // This will create a new exchange service and start to broadcast clients that added to service.
-func NewExchangeService(repository *repositories.ExchangesRepository) *ExchangesService {
+func NewExchangeService(repository repositories.IExchangesRepository) *ExchangesService {
 	service := &ExchangesService{
 		repository: repository,
 		clients:    make(map[*websocket.Conn]chan *models.ExchangeRates),

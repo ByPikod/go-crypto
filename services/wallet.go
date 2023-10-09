@@ -10,7 +10,7 @@ type WalletService struct {
 }
 
 // Create new wallet service
-func NewWalletService(repository *repositories.WalletRepository) *WalletService {
+func NewWalletService(repository repositories.IWalletRepository) *WalletService {
 	return &WalletService{repository: repository}
 }
 

@@ -4,7 +4,7 @@ import (
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
-	"github.com/ByPikod/go-crypto/router"
+	"github.com/ByPikod/go-crypto/repositories"
 )
 
 // @title           Go Crypto
@@ -25,11 +25,11 @@ import (
 func main() {
 
 	// Load configuration from environment variables
-	core.InitializeConfig()
+	config := core.InitializeConfig()
 	helpers.LogInfo("Initialized config")
 
 	// Initialize database with config above
-	db := core.InitializeDatabase(core.Config.Database)
+	db := core.InitializeDatabase(config.Database)
 	helpers.LogInfo("Initialized database")
 
 	// Migration of the database
@@ -46,6 +46,13 @@ func main() {
 	helpers.LogInfo("Migrating completed.")
 
 	// Initialize http server and routes.
-	router.InitializeRouter(db)
+	router := core.NewRouter(
+		repositories.NewExchangesRepository(),
+		repositories.NewUserRepository(db, config.AuthSecret),
+		repositories.NewWalletRepository(db),
+	)
+
+	router.Initialize()
+	router.App().Listen(config.Host + ":" + config.Listen)
 
 }

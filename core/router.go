@@ -1,8 +1,7 @@
-package router
+package core
 
 import (
 	"github.com/ByPikod/go-crypto/controllers"
-	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/repositories"
@@ -11,37 +10,59 @@ import (
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"gorm.io/gorm"
 )
 
-var App *fiber.App
+type (
+	Router struct {
+		app                 *fiber.App
+		exchangesRepository repositories.IExchangesRepository
+		userRepository      repositories.IUserRepository
+		walletRepository    repositories.IWalletRepository
+	}
+)
 
-// Respond with hello world and 200 status code
-func helloWorld(c *fiber.Ctx) error {
-	return c.Status(200).JSON(fiber.Map{
-		"code":    200,
-		"message": "Hello world!",
-	})
+// Creates a new router object.
+func NewRouter(
+	exchangesRepository repositories.IExchangesRepository,
+	userRepository repositories.IUserRepository,
+	walletRepository repositories.IWalletRepository,
+) *Router {
+	return &Router{
+		exchangesRepository: exchangesRepository,
+		userRepository:      userRepository,
+		walletRepository:    walletRepository,
+	}
 }
 
-func InitializeRouter(db *gorm.DB) {
-	App = fiber.New()
-	App.Get("/", helloWorld)
+// Returns the app instance.
+func (router *Router) App() *fiber.App {
+	return router.app
+}
 
-	// Repositories
+// Initializes the router object.
+func (router *Router) Initialize() {
+
+	// Create fiber app
+	App := fiber.New()
+	App.Get("/", func(c *fiber.Ctx) error {
+		return c.Status(200).JSON(fiber.Map{
+			"code":    200,
+			"message": "Hello world!",
+		})
+	})
+
+	// Business layer (Services)
 	var (
-		// Exchange rates
-		exchangesRepository = repositories.NewExchangesRepository()
-		exchangesService    = services.NewExchangeService(exchangesRepository)
+		exchangesService = services.NewExchangeService(router.exchangesRepository)
+		userService      = services.NewUserService(router.userRepository)
+		walletService    = services.NewWalletService(router.walletRepository)
+	)
+
+	// Presentation layer (Controllers)
+	var (
 		exchangesController = controllers.NewExchangesController(exchangesService)
-		// User
-		userRepository = repositories.NewUserRepository(db)
-		userService    = services.NewUserService(userRepository)
-		userController = controllers.NewUserController(userService)
-		// Wallet
-		walletRepository = repositories.NewWalletRepository(db)
-		walletService    = services.NewWalletService(walletRepository)
-		walletController = controllers.NewWalletController(walletService, exchangesService)
+		userController      = controllers.NewUserController(userService)
+		walletController    = controllers.NewWalletController(walletService, exchangesService)
 	)
 
 	// Metrics
@@ -86,7 +107,6 @@ func InitializeRouter(db *gorm.DB) {
 
 	// 404
 	App.Use(helpers.NotFound)
+	router.app = App
 
-	// Listen
-	App.Listen(core.Config.Host + ":" + core.Config.Listen)
 }

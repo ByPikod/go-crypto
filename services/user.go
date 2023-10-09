@@ -1,11 +1,14 @@
 package services
 
 import (
-	"github.com/ByPikod/go-crypto/core"
+	"errors"
+	"fmt"
+
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt"
 )
 
 type (
@@ -20,9 +23,69 @@ type (
 	}
 )
 
+var (
+	ErrTokenMalformed     = errors.New("token malformed")
+	ErrTokenCouldntParsed = errors.New("token signed but id is not uint")
+	ErrTokenUnauthorized  = errors.New("unauthorized")
+)
+
 // Create new user service.
-func NewUserService(repository *repositories.UserRepository) *UserService {
+func NewUserService(repository repositories.IUserRepository) *UserService {
 	return &UserService{repository: repository}
+}
+
+// Authenticates a user from its token.
+//
+// It will return user id, if successfully authenticated.
+// Will occur an error if not.
+func (service *UserService) Authenticate(token string) (uint, error) {
+
+	// Token parse
+	tokenObj, err := jwt.Parse(token, func(tokenObj *jwt.Token) (interface{}, error) {
+		return []byte(service.repository.AuthSecret()), nil
+	})
+
+	if err != nil {
+		// Failed to parse token
+		fmt.Println("failed to parse token.")
+		return 0, ErrTokenMalformed
+	}
+
+	// Get claims by decoding the token
+	claims, ok := tokenObj.Claims.(jwt.MapClaims)
+	if !ok {
+		fmt.Println("failed to parse claims.")
+		return 0, ErrTokenUnauthorized
+	}
+
+	userID, ok := claims["UserID"].(float64)
+	if !ok {
+		return 0, ErrTokenCouldntParsed
+	}
+
+	return uint(userID), nil
+
+}
+
+// Generates a token for a user by its ID.
+func (service *UserService) GenerateUserToken(id uint) (string, error) {
+
+	claims := struct {
+		jwt.StandardClaims
+		UserID uint
+	}{
+		UserID: id,
+	}
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &claims)
+	tokenString, err := token.SignedString([]byte(service.repository.AuthSecret()))
+
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+
 }
 
 // Registers a user.
@@ -120,7 +183,7 @@ func (service *UserService) Login(mailAddress string, password string) (map[stri
 	}
 
 	// Create token
-	token, err := helpers.GenerateUserToken(core.Config.AuthSecret, matching.ID)
+	token, err := service.GenerateUserToken(matching.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -134,6 +197,7 @@ func (service *UserService) Login(mailAddress string, password string) (map[stri
 
 }
 
+// Get user by its ID
 func (service *UserService) GetUserById(id uint) (*models.User, error) {
 	return service.repository.GetUserById(id)
 }

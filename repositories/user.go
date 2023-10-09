@@ -10,7 +10,8 @@ import (
 
 type (
 	UserRepository struct {
-		db *gorm.DB
+		db     *gorm.DB
+		secret string
 	}
 
 	IUserRepository interface {
@@ -18,12 +19,18 @@ type (
 		IsMailAvailable(mailAddress string) (bool, error)
 		GetUserByMail(mailAddress string) (*models.User, error)
 		GetUserById(id uint) (*models.User, error)
+		AuthSecret() string
 	}
 )
 
 // Create user repository
-func NewUserRepository(db *gorm.DB) *UserRepository {
+func NewUserRepository(db *gorm.DB, secret string) *UserRepository {
 	return &UserRepository{db: db}
+}
+
+// Returns the authentication secret
+func (repo *UserRepository) AuthSecret() string {
+	return repo.secret
 }
 
 // Registers a user.

@@ -1,14 +1,11 @@
 package middleware
 
 import (
-	"math"
 	"strings"
 
-	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 type (
@@ -39,35 +36,24 @@ func (authMiddleware *AuthMiddleware) Auth(ctx *fiber.Ctx) error {
 		return helpers.Unauthorized(ctx, "Token malformed.")
 	}
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(core.Config.AuthSecret), nil
-	})
-
+	// Check token
+	userID, err := authMiddleware.userService.Authenticate(tokenString)
 	if err != nil {
-		// Failed to parse token
-		return helpers.Unauthorized(ctx, "Token malformed.")
-	}
-
-	// Get claims by decoding the token
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
 		return helpers.Unauthorized(ctx)
 	}
 
-	userID := claims["UserID"].(float64)
+	// Look for user
+	user, err := authMiddleware.userService.GetUserById(userID)
 	if err != nil {
-		return helpers.Unauthorized(ctx, "Failed to parse ID.")
-	}
-
-	userID_uint := uint(math.Abs(float64(userID)))
-	user, err := authMiddleware.userService.GetUserById(userID_uint)
-	if err != nil {
-		return helpers.Unauthorized(ctx, "Token signature verified, but claimed user not found.")
+		// Database error
+		return helpers.InternalServerError(ctx)
 	}
 	if user == nil {
+		// User not found?
 		return helpers.Unauthorized(ctx, "User account removed or suspended!")
 	}
 
+	// Authenticated
 	ctx.Locals("user", user)
 	return ctx.Next()
 }
