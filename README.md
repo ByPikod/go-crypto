@@ -10,7 +10,7 @@
 # Introduction
 This is a prototype back-end of a crypto application that I developed for my internship. 
 
-#### Table of Contents
+## Table of Contents
 - [Introduction](#introduction)
     - [To-do List](#to-do-list)
 - [Project Design](#project-design)
@@ -18,11 +18,16 @@ This is a prototype back-end of a crypto application that I developed for my int
     - [Ports](#ports)
     - [Folder Structure](#folder-structure)
     - [Models](#models)
-    - [Monitoring](#monitoring)
+- [Monitoring](#monitoring)
+    - [Prometheus](#prometheus)
+    - [Grafana](#grafana)
+- [Load Test](#load-test)
+    - [Using K6](#using-k6)
+    - [Monitoring Test Results](#monitoring-test-results)
 - [API Documentation](#api)
 - [Copyright](#copyright)
 
-#### To-do List
+## To-do List
 Prepare a prototype crypto wallet REST API and follow the rules below: 
 
 * [x] Respond HTTP requests with Fiber
@@ -39,7 +44,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [ ] Unit tests
 * [ ] Mocking
 * [x] Monitoring with Prometheus and Grafana
-* [ ] Load test
+* [x] Profile application with load test
 
 # Installation
 
@@ -60,28 +65,31 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 # Project Design
 
 ## Technologies
-* Must:
-    * Go
-    * Gorn
-    * Fiber
-    * JWT
-    * Docker
-    * Postgres
-    * Swagger
-    * Swaggo
-    * Prometheus
-    * Grafana
-* Optional:
-    * Air
-    * Postman
+
+* **Go:** Programming language.
+* **Gorn:** Database management
+* **Fiber:** HTTP library.
+* **JWT:** Auth standard.
+* **Docker:** Provides easy installation.
+* **Postgres:** Database
+* **Swagger:** Rest API documentation.
+* **Swaggo:** Auto config generator for Swagger
+* **Prometheus:** Analytic collector.
+* **Grafana:** Analytic visualizer.
+* **Air:** Live debugging for go projects.
 
 ## Ports
+
+The ports exposed by the project are:
+
 * Go Fiber: 8080
 * Prometheus: 9090
 * Grafana: 3000
 * Postgres: 5432
 
 ## Folder Structure
+This project follows common designs used in the back-end of web applications. Here is the project tree with comments explaining the modules, files, and their purposes:
+
 ```py
 .
 ├── controllers # Endpoints (aka Presentation layer)
@@ -123,6 +131,8 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 
 ## Models
 
+The module called "Models" is the boilerplate that represents data structures used in the background of web applications. Models are used to introduce raw data into the programming language being used. Here are the models for this project:
+
 * **User:** Holds user data. Password encrypted with bcrypt.
     ```go
     type User struct {
@@ -160,17 +170,40 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     ```
 # Monitoring
 
-Prometheus and Grafana used for monitoring.
+Prometheus and Grafana are tools used for monitoring and analyzing metrics of a web application. With Grafana and Prometheus, you can analyze a wide range of data, from sales metrics to resource utilization and more.
+
+## Prometheus
 
 Prometheus is a software that collects "metric" data from the http servers by requesting a specific endpoint at target servers at intervals you specified. The metric data is stored chronologically by the Prometheus. Data can be accessed via web interface or Rest API that Prometheus provides.
 
 ![Prometheus web interface](promotions/prometheus.png)
+
+## Grafana
 
 And Grafana is an open source analytics monitoring tool that provides bunch of visual components like (e.g charts, gauges). Grafana can have multiple data sources and Prometheus is one of them. Grafana can request to API of the Prometheus and visualize your chronologically stored metrics data.
 
 I've configured Prometheus to gather **default Go Metrics** from **Go Fiber** and visualized some of those metrics in Grafana as can be seen in the picture below:
 
 ![monitoring](promotions/monitoring.png)
+
+# Load Test
+
+The term load testing is used in different ways in the professional software testing community. Load testing generally refers to the practice of modeling the expected usage of a software program by simulating multiple users accessing the program concurrently.
+(https://en.wikipedia.org/wiki/Load_testing)
+
+I've used "Grafana K6" to load test this project. K6 has a very simple interface.
+
+## Using K6
+First, you should create a JavaScript file for K6, as mentioned, named ["scripts/loadtest.js"](scripts/loadtest.js).
+
+This script, using the framework provided by K6, allows you to quickly send load requests to your web application. You can also perform checks on responses using the functions provided by K6.
+
+K6 is originally designed to export metrics to a data source called InfluxDB. However, you can obtain output for Prometheus using the experimental [Prometheus Remote Write](https://k6.io/docs/results-output/real-time/prometheus-remote-write/) module.
+
+## Monitoring Test Results
+The output obtained from Prometheus can be visualized using the Grafana interface, as explained in the "Monitoring" section.
+
+![loadtest monitoring](promotions/loadtest.png)
 
 # API
 
@@ -184,7 +217,7 @@ I've configured Prometheus to gather **default Go Metrics** from **Go Fiber** an
 
 <details>
 <summary style="font-size: 1.5em;">
-<code>GET</code> <code>/api/currencies/</code>
+<code>GET</code> <code>/api/exchange-rates/</code>
 </summary>
 
 ##### Description    

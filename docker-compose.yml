@@ -35,7 +35,9 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=native-histograms'
     depends_on:
       - gocrypto
   grafana:
@@ -47,6 +49,19 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=root
     volumes:
       - ./grafana.db:/var/lib/grafana/grafana.db
+    depends_on:
+      - prometheus
+  k6:
+    image: grafana/k6:latest
+    container_name: k6
+    volumes:
+      - ./scripts:/scripts
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_USERNAME=admin
+      - K6_PROMETHEUS_RW_PASSWORD=admin12345
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    command: run -o experimental-prometheus-rw /scripts/loadtest.js
     depends_on:
       - prometheus
 volumes:
