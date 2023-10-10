@@ -4,14 +4,15 @@ import (
 	"github.com/ByPikod/go-crypto/controllers"
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/repositories"
 	"github.com/ByPikod/go-crypto/services"
-	"github.com/ansrivas/fiberprometheus"
-	"github.com/gofiber/fiber"
+	"github.com/ansrivas/fiberprometheus/v2"
+	"github.com/gofiber/contrib/websocket"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/websocket"
 )
 
 // @title           Go Crypto
@@ -33,7 +34,7 @@ func main() {
 
 	// Load configuration from environment variables
 	config := core.InitializeConfig()
-	helpers.LogInfo("Initialized config")
+	log.Info("Initialized config")
 
 	// Initialize database with config above
 	db := core.InitializeDatabase(config.Database)
