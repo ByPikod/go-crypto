@@ -56,7 +56,7 @@ func InitializeConfig() *Configuration {
 		AuthSecret: or(os.Getenv("AUTH_SECRET"), "32f97916299787f211b5111e6da178b1"),
 		Database:   &dbInfo,
 		Host:       or(os.Getenv("HOST"), ""),
-		Listen:     or(os.Getenv("LISTEN"), "8080"),
+		Listen:     or(os.Getenv("LISTEN"), "80"),
 	}
 
 	Config = &config

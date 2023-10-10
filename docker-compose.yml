@@ -17,7 +17,7 @@ services:
       dockerfile: dockerfile
     container_name: gocrypto
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - postgres
     environment:
@@ -27,6 +27,15 @@ services:
       DB_USER: "postgres"
       DB_PASS: "root"
       DB_NAME: "gocrypto"
+  swagger:
+    container_name: swagger
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docs/swagger.json:/swagger.json
+    environment:
+      - SWAGGER_JSON=/swagger.json
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
