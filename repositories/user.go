@@ -3,6 +3,7 @@ package repositories
 import (
 	"errors"
 
+	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
 	"github.com/ByPikod/go-crypto/models"
 	"gorm.io/gorm"
@@ -24,13 +25,13 @@ type (
 )
 
 // Create user repository
-func NewUserRepository(db *gorm.DB, secret string) *UserRepository {
+func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
 // Returns the authentication secret
 func (repo *UserRepository) AuthSecret() string {
-	return repo.secret
+	return core.Config.AuthSecret
 }
 
 // Registers a user.
