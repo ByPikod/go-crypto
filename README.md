@@ -173,7 +173,7 @@ The module called "Models" is the boilerplate that represents data structures us
         Wallet   Wallet  `gorm:"foreignKey:WalletID"` // BelongsTo
     }
     ```
-* **Exchanges: This model holds the exchange data received from API.
+* **Exchanges:** This model holds the exchange data received from API.
     ```go
     type ExchangeRates struct {
 	    Currency string             `json:"currency"`
