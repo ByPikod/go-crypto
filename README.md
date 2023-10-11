@@ -1,4 +1,4 @@
-![Framework](promotions/fiber.png)
+![Framework](promotions/banner.png)
 
 ![License](https://img.shields.io/github/license/ByPikod/go-crypto.svg?style=for-the-badge)
 ![Maintaned](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)
@@ -13,6 +13,7 @@ This is a prototype back-end of a crypto application that I developed for my int
 ## Table of Contents
 - [Introduction](#introduction)
     - [To-do List](#to-do-list)
+    - [Installation](#installation)
     - [Developer Tips](#developer-tips)
 - [Project Design](#project-design)
     - [Technologies](#technologies)
@@ -50,14 +51,7 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Monitoring with Prometheus and Grafana
 * [x] Profile application with load test
 
-## Developer Tips
-* File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
-* You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
-* Credentials for Grafana:
-    * Username: `admin`
-    * Password: `root`
-
-# Installation
+## Installation
 
 ### Requirements
 * [git-cli](https://git-scm.com/downloads)
@@ -69,6 +63,13 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * Run docker-compose: `docker-compose up`
 
     * Optionally add "-d" arg to run at background: `docker-compose up -d`    
+
+## Developer Tips
+* File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
+* You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
+* Credentials for Grafana:
+    * Username: `admin`
+    * Password: `root`
 
 # Project Design
 
