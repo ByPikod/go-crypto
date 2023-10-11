@@ -95,7 +95,7 @@ func main() {
 
 	App.Use(cors.New(
 		cors.Config{
-			AllowHeaders:     "",
+			AllowHeaders:     "*",
 			AllowOrigins:     "*",
 			AllowCredentials: true,
 			AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
