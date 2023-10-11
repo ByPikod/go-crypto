@@ -23,6 +23,8 @@ This is a prototype back-end of a crypto application that I developed for my int
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
 - [Logging](#logging)
+    - [Traditional Logging](#traditional-logging)
+    - [Loki](#loki)
 - [Load Test](#load-test)
     - [Using K6](#using-k6)
     - [Monitoring Test Results](#monitoring-test-results)
@@ -51,6 +53,9 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 ## Developer Tips
 * File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
 * You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
+* Credentials for Grafana:
+    * Username: `admin`
+    * Password: `root`
 
 # Installation
 
