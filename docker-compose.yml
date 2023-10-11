@@ -21,7 +21,7 @@ services:
       - ./loki-config.yml:/local-config.yaml
   gocrypto:
     build:
-      context: .  # The location of your Dockerfile (current directory in this case)
+      context: src  # The location of your Dockerfile (current directory in this case)
       dockerfile: dockerfile.dev
     container_name: gocrypto
     ports:
@@ -42,7 +42,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./docs/swagger.json:/swagger.json
+      - ./crypto/docs/swagger.json:/swagger.json
     environment:
       - SWAGGER_JSON=/swagger.json
   prometheus:

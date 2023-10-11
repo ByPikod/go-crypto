@@ -1,4 +1,4 @@
-module github.com/ByPikod/go-crypto
+module github.com/ByPikod/go-crypto/crypto
 
 go 1.21.1
 
