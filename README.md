@@ -356,7 +356,7 @@ Creates a new account if provided details are appropriate.
 
 <details>
 <summary style="font-size: 1.5em;">
-<code>POST</code> <code>/api/user/me/</code>
+<code>GET</code> <code>/api/user/me/</code>
 </summary>
 
 ##### Description    
@@ -383,7 +383,7 @@ Auth required
 
 <details>
 <summary style="font-size: 1.5em;">
-<code>POST</code> <code>/api/user/wallet/balance/</code>
+<code>GET</code> <code>/api/user/wallet/balance/</code>
 </summary>
 
 ##### Description    
