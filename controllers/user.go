@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 type (
@@ -58,7 +60,7 @@ func (controller UserController) Register(ctx *fiber.Ctx) error {
 
 	// An error occured
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Register", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -66,6 +68,14 @@ func (controller UserController) Register(ctx *fiber.Ctx) error {
 	if result["status"] == false {
 		return ctx.Status(400).JSON(result)
 	}
+
+	log.Info(
+		"Account registered",
+		zap.String("remote_ip", ctx.IP()),
+		zap.String("name", payload.Name),
+		zap.String("lastname", payload.Lastname),
+		zap.String("user_mail", payload.Mail),
+	)
 
 	// Successfull
 	return ctx.Status(200).JSON(result)
@@ -94,7 +104,7 @@ func (controller *UserController) Login(ctx *fiber.Ctx) error {
 	result, err := controller.service.Login(payload.Mail, payload.Password)
 
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Login", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -102,6 +112,12 @@ func (controller *UserController) Login(ctx *fiber.Ctx) error {
 	if result["status"] == false {
 		return ctx.Status(400).JSON(result)
 	}
+
+	log.Info(
+		"Client logged in",
+		zap.String("remote_ip", ctx.IP()),
+		zap.String("user_mail", payload.Mail),
+	)
 
 	// Success
 	return ctx.Status(200).JSON(result)

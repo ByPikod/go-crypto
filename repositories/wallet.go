@@ -38,23 +38,28 @@ func (repository *WalletRepository) GetWallet(
 	userID uint,
 	currency string,
 ) (*models.Wallet, error) {
+
 	// Query payload
 	wallet := models.Wallet{
 		Currency: currency,
 		UserID:   userID,
 	}
+
 	// Query execution
 	result := repository.db.Model(&wallet).Where(&wallet).First(&wallet)
 	if result.Error == nil {
-		// If wallet found, return
+		// If wallet found, return it.
 		return &wallet, nil
 	}
+
 	// Not found
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
+
 	// An unexpected error ocurred
 	return nil, result.Error
+
 }
 
 // Creates a wallet.
@@ -68,6 +73,7 @@ func (repository *WalletRepository) SaveWallet(wallet *models.Wallet) error {
 		return ErrInvalidWallet
 	}
 	return repository.db.Save(&wallet).Error
+
 }
 
 // Fetch all the wallets user has.

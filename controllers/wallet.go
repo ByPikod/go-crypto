@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 type WalletController struct {
@@ -53,7 +55,7 @@ func (controller *WalletController) Deposit(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 	wallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Deposit", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -64,9 +66,16 @@ func (controller *WalletController) Deposit(ctx *fiber.Ctx) error {
 		payload.Amount,
 	)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Deposit", err)
 		return helpers.InternalServerError(ctx)
 	}
+
+	log.Info(
+		"Successfull deposit",
+		zap.Uint("user_id", user.ID),
+		zap.String("user_mail", user.Mail),
+		zap.Float64("amount", payload.Amount),
+	)
 
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":     true,
@@ -111,7 +120,7 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 	// Retrieve USD Wallet
 	usdWallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Buy", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -127,7 +136,7 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 
 	buyCurrencyWallet, err := controller.service.GetOrCreateWallet(user.ID, payload.Currency)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Buy", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -139,7 +148,7 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 	)
 
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Buy", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -151,6 +160,18 @@ func (controller *WalletController) Buy(ctx *fiber.Ctx) error {
 	if err != nil {
 		panic(err)
 	}
+
+	log.Info(
+		"Successfull buying",
+		zap.Uint("user_ids", user.ID),
+		zap.String("user_mail", user.Mail),
+		zap.String("sold_currency", "USD"),
+		zap.Float64("sold_amount", neededUSDBalance),
+		zap.String("bought_currency", payload.Currency),
+		zap.Float64("bought_amount", payload.Amount),
+		zap.Float64("left", sellTransaction.Balance),
+		zap.Float64("new_balance", buyTransaction.Balance),
+	)
 
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":          true,
@@ -196,7 +217,7 @@ func (controller *WalletController) Withdraw(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 	wallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Withdraw", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -207,9 +228,16 @@ func (controller *WalletController) Withdraw(ctx *fiber.Ctx) error {
 		payload.Amount,
 	)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Withdraw", err)
 		return helpers.InternalServerError(ctx)
 	}
+
+	log.Info(
+		"Successfull withdaraw",
+		zap.Uint("user_id", user.ID),
+		zap.String("user_mail", user.Mail),
+		zap.Float64("amount", payload.Amount),
+	)
 
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":     true,
@@ -254,7 +282,7 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 	// Retrieve requested currency wallet
 	requestedWallet, err := controller.service.GetWallet(user.ID, payload.Currency)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Sell", err)
 		return helpers.InternalServerError(ctx)
 	}
 	if requestedWallet == nil {
@@ -279,7 +307,7 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 	// Retrieve USD Wallet
 	usdWallet, err := controller.service.GetOrCreateWallet(user.ID, "USD")
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Sell", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -290,7 +318,7 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 		-payload.Amount,
 	)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Sell", err)
 		return helpers.InternalServerError(ctx)
 	}
 
@@ -303,6 +331,18 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 		panic(err)
 	}
 
+	log.Info(
+		"Successfull selling",
+		zap.Uint("user_ids", user.ID),
+		zap.String("user_mail", user.Mail),
+		zap.String("sold_currency", payload.Currency),
+		zap.Float64("sold_amount", payload.Amount),
+		zap.String("bought_currency", "USD"),
+		zap.Float64("bought_amount", additionBalanceUSD),
+		zap.Float64("left", sellTransaction.Balance),
+		zap.Float64("new_balance", buyTransaction.Balance),
+	)
+
 	return ctx.Status(200).JSON(fiber.Map{
 		"status":          true,
 		"message":         "OK!",
@@ -311,8 +351,8 @@ func (controller *WalletController) Sell(ctx *fiber.Ctx) error {
 		"bought_currency": "USD",
 		"bought_amount":   additionBalanceUSD,
 		"Balance": fiber.Map{
-			"USD":            sellTransaction.Balance,
-			payload.Currency: buyTransaction.Balance,
+			payload.Currency: sellTransaction.Balance,
+			"USD":            buyTransaction.Balance,
 		},
 	})
 }
@@ -332,7 +372,7 @@ func (controller *WalletController) Balance(ctx *fiber.Ctx) error {
 	user := ctx.Locals("user").(*models.User)
 	err := controller.service.LoadWallets(user)
 	if err != nil {
-		helpers.LogError(err.Error())
+		log.ControllerError("Balance", err)
 		return helpers.InternalServerError(ctx)
 	}
 

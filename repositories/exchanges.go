@@ -7,7 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/core"
+	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/models"
 )
 
@@ -18,6 +19,7 @@ type (
 
 	IExchangesRepository interface {
 		GetExchangeRates() *models.ExchangeRates
+		GetFetchInterval() time.Duration
 	}
 )
 
@@ -90,16 +92,17 @@ func (repo *ExchangesRepository) parseFloats(exchangeRates map[string]string) (m
 func (repo *ExchangesRepository) updateExchangeRate() {
 	exchangeRates, err := repo.fetchExchangeRate("USD")
 	if err != nil {
-		helpers.LogError("Failed to fetch exchange rate: " + err.Error())
+		log.QuickError("Failed to fetch exchange rate", err)
 	}
 	repo.lastExchangeData = exchangeRates
+	log.Info("Updated crypto exchanges rate data")
 }
 
 // Initializes exchange rate worker and keep updates the lastExchangeRates variable.
 // Use GetExchangeRates() function to get exchange rates.
 func (repo *ExchangesRepository) initializeExchangeRateUpdater() {
 	repo.updateExchangeRate()
-	for range time.Tick(time.Second * 30) {
+	for range time.Tick(repo.GetFetchInterval()) {
 		repo.updateExchangeRate()
 	}
 }
@@ -107,4 +110,9 @@ func (repo *ExchangesRepository) initializeExchangeRateUpdater() {
 // Returns last fetched exchange rates. Returns nil if exchange rate worker haven't been initialized.
 func (repo *ExchangesRepository) GetExchangeRates() *models.ExchangeRates {
 	return repo.lastExchangeData
+}
+
+// Returns the exchanges rate fetch interval.
+func (repo *ExchangesRepository) GetFetchInterval() time.Duration {
+	return time.Second * time.Duration(core.Config.ExchangesFetchInterval)
 }

@@ -11,8 +11,7 @@ import (
 
 type (
 	UserRepository struct {
-		db     *gorm.DB
-		secret string
+		db *gorm.DB
 	}
 
 	IUserRepository interface {

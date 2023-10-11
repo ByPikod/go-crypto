@@ -13,6 +13,7 @@ This is a prototype back-end of a crypto application that I developed for my int
 ## Table of Contents
 - [Introduction](#introduction)
     - [To-do List](#to-do-list)
+    - [Developer Tips](#developer-tips)
 - [Project Design](#project-design)
     - [Technologies](#technologies)
     - [Ports](#ports)
@@ -21,6 +22,7 @@ This is a prototype back-end of a crypto application that I developed for my int
 - [Monitoring](#monitoring)
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
+- [Logging](#logging)
 - [Load Test](#load-test)
     - [Using K6](#using-k6)
     - [Monitoring Test Results](#monitoring-test-results)
@@ -45,6 +47,10 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
 * [x] Mock repository layer for unit tests.
 * [x] Monitoring with Prometheus and Grafana
 * [x] Profile application with load test
+
+## Developer Tips
+* File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
+* You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
 
 # Installation
 
@@ -88,9 +94,12 @@ The ports exposed by the project are:
 |------------|------|---------------------------------------|
 | Fiber      | 80   | Rest API itself.                      |
 | Swagger    | 8080 | Auto generated documentation for API. |
-| Prometheus | 9090 | Metric database.                      |
 | Grafana    | 3000 | Monitoring interface.                 |
 | Postgres   | 5432 | Database                              |
+| Prometheus | 9090 | Metric database.                      |
+| Loki       | 3100 | Log database.                         |
+
+Some ports are exposed on development purposes.
 
 ### Folder Structure
 This project follows common designs used in the back-end of web applications. Here is the project tree with comments explaining the modules, files, and their purposes:
@@ -107,10 +116,12 @@ This project follows common designs used in the back-end of web applications. He
 ├── helpers # Utilities
 │   ├── database.go # Database utilities
 │   ├── errors.go # HTTP Errors (e.g 404, 403, 400)
-│   ├── logger.go # Logging functions
 │   ├── password.go # Password hashing, comparing
 │   ├── token.go # JWT utilities
 │   └── validate.go # Payload validations
+├── log
+│   ├── local.go # Logging functions for local logs.
+│   └── log.go # Logging functions for Loki.
 ├── main.go
 ├── middleware
 │   ├── auth.go # Authorization with JWT
@@ -208,6 +219,23 @@ And Grafana is an open source analytics monitoring tool that provides bunch of v
 I've configured Prometheus to gather **default Go Metrics** from **Go Fiber** and visualized some of those metrics in Grafana as can be seen in the picture below:
 
 ![monitoring](promotions/monitoring.png)
+
+# Logging
+This project uses two different methods for logging. One is for local logging with simple print functions and the other is for advanced logging for customers.
+
+### Traditional Logging
+I've used traditional local logging functions for the stuff that only concerns developers.
+
+![traditional logging](promotions/traditional-logging.png)
+
+### Loki
+Loki is an open-source log aggregation system developed by Grafana Labs. It is designed to help you collect, store, and query log data from various sources in a scalable and efficient manner. 
+
+In this project, I used **Loki** for advanced logging. And I used [zap-loki](https://github.com/paul-milne/zap-loki) library for establishing the connection between Go and Loki.
+
+Monitoring Loki data source in Grafana:
+
+![logging](promotions/logging.png)
 
 # Load Test
 

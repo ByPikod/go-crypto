@@ -18,7 +18,7 @@ type (
 // Broadcast the last exchange data to all the clients with an interval.
 func (service *ExchangesService) wsExchangeBroadcaster() {
 	// Wait
-	for range time.Tick(5 * time.Second) {
+	for range time.Tick(service.repository.GetFetchInterval()) {
 		lastExchangeData := service.repository.GetExchangeRates()
 		// Broadcast the last exchange data to all the clients connected.
 		for _, ch := range service.clients {

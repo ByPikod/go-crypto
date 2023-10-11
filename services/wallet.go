@@ -17,20 +17,20 @@ func NewWalletService(repository repositories.IWalletRepository) *WalletService 
 // Returns wallet if exists. Creates it and returns it if not exists.
 func (service *WalletService) GetOrCreateWallet(userID uint, currency string) (*models.Wallet, error) {
 
-	// Payload
-	wallet := &models.Wallet{
-		UserID:   userID,
-		Currency: currency,
-	}
-
 	// Try to get wallet
-	wallet, err := service.repository.GetWallet(userID, currency)
+	result, err := service.repository.GetWallet(userID, currency)
 	if err != nil {
 		return nil, err
 	}
 
-	if wallet != nil {
-		return wallet, nil
+	if result != nil {
+		return result, nil
+	}
+
+	// Payload
+	wallet := &models.Wallet{
+		UserID:   userID,
+		Currency: currency,
 	}
 
 	// Create wallet

@@ -11,15 +11,24 @@ services:
       - '5432:5432'
     volumes: 
       - postgres:/var/lib/postgresql/data
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/local-config.yaml
+    volumes:
+      - ./loki-config.yml:/local-config.yaml
   gocrypto:
     build:
       context: .  # The location of your Dockerfile (current directory in this case)
-      dockerfile: dockerfile
+      dockerfile: dockerfile.dev
     container_name: gocrypto
     ports:
       - "80:80"
     depends_on:
       - postgres
+      - loki
     environment:
       AUTH_SECRET: 32f97916299787f211b5111e6da178b1
       DB_HOST: "postgres"
@@ -60,6 +69,7 @@ services:
       - ./grafana.db:/var/lib/grafana/grafana.db
     depends_on:
       - prometheus
+      - loki
   k6:
     image: grafana/k6:latest
     container_name: k6

@@ -63,7 +63,7 @@ func (dbInfo *DBInfo) connect() (*gorm.DB, error) {
 	// Close temporary database connection
 	sqlDB, err := dbConn.DB()
 	if err != nil {
-		helpers.LogError("Failed to close temporary database connection!")
+		helpers.LogError("Failed to close temporary database connection: " + err.Error())
 		return nil, err
 	}
 	sqlDB.Close()
@@ -75,6 +75,6 @@ func (dbInfo *DBInfo) connect() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	helpers.LogInfo("Established database connection.")
+	helpers.LogError("Established database connection.")
 	return db, nil
 }

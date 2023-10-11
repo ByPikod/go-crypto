@@ -4,7 +4,6 @@ import (
 	"github.com/ByPikod/go-crypto/controllers"
 	"github.com/ByPikod/go-crypto/core"
 	"github.com/ByPikod/go-crypto/helpers"
-	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/middleware"
 	"github.com/ByPikod/go-crypto/models"
 	"github.com/ByPikod/go-crypto/repositories"
@@ -33,8 +32,8 @@ import (
 func main() {
 
 	// Load configuration from environment variables
-	config := core.InitializeConfig()
-	log.Info("Initialized config")
+	config := core.Config
+	helpers.LogInfo("Initialized config")
 
 	// Initialize database with config above
 	db := core.InitializeDatabase(config.Database)

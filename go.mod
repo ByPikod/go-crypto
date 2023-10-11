@@ -8,6 +8,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/gofiber/websocket/v2 v2.2.1
 	github.com/joho/godotenv v1.5.1
+	github.com/paul-milne/zap-loki v0.2.0
 	github.com/swaggo/swag v1.16.2
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.13.0

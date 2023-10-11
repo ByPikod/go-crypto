@@ -4,8 +4,10 @@ import (
 	"strings"
 
 	"github.com/ByPikod/go-crypto/helpers"
+	"github.com/ByPikod/go-crypto/log"
 	"github.com/ByPikod/go-crypto/services"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 type (
@@ -50,6 +52,11 @@ func (authMiddleware *AuthMiddleware) Auth(ctx *fiber.Ctx) error {
 	}
 	if user == nil {
 		// User not found?
+		log.Warn(
+			"User sent a token that belongs to no account.",
+			zap.String("remote_ip", ctx.IP()),
+			zap.Uint("user_id", userID),
+		)
 		return helpers.Unauthorized(ctx, "User account removed or suspended!")
 	}
 
