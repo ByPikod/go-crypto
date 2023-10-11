@@ -2,3 +2,7 @@
 	path = crypto
 	url = https://github.com/ByPikod/go-crypto.git
 	branch = crypto
+[submodule "notifier"]
+	path = notifier
+	url = https://github.com/ByPikod/go-crypto.git
+	branch = notifier
