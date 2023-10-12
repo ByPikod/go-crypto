@@ -21,7 +21,7 @@ services:
       - ./loki-config.yml:/local-config.yaml
   gocrypto:
     build:
-      context: src  # The location of your Dockerfile (current directory in this case)
+      context: crypto  # The location of your Dockerfile (current directory in this case)
       dockerfile: dockerfile.dev
     container_name: gocrypto
     ports:
