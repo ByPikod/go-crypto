@@ -42,23 +42,23 @@ This is a prototype back-end of a crypto application that I developed for my int
 * [x] Respond HTTP requests with Fiber
 * [x] Provide a better database interface with GORM.
 * [x] Dockerize the project to avoid version conflicts.
-* [ ] Use the following postgres normalization rules: 
+* [ ] Use the following database relationships: 
     * [x] HasMany, 
     * [ ] HasOne, 
     * [x] BelongsTo,
     * [ ] ManyToMany
-* [x] Use JWT for the authentication.
-* [x] Use GORN auto migrate.
-* [x] Documentize API with Swagger
-* [ ] Tests
+* [x] Use JWT to authenticate user.
+* [x] Use GORM to migrate models.
+* [x] Documentize the API with Swagger
+* [ ] Test the app
     * [ ] Unit tests.
     * [x] Mock repository layer for unit tests.
-* [ ] Monitoring the app
+* [x] Monitor the app
     * [x] Monitoring with Prometheus and Grafana
     * [x] Profile application with load test
     * [x] Monitor logs with Loki and Grafana.
-* [ ] Micro Services
-    * [ ] Create a mail verification system in "Go Crypto".
+* [ ] Create a micro service
+    * [ ] Create a mail verification system for "Go Crypto".
     * [ ] Create a mail sender micro service named "Notifier" to send verification mails.
     * [ ] Connect "Notifier" and "Go Crypto" with **Kafka**
     * [ ] Use **Apache ZooKeeper** with **Kafka**
@@ -355,14 +355,17 @@ Returns auth token if matching credentials provided.
 
 ##### Description    
 Creates a new account if provided details are appropriate.
+If verification code is not provided, it will try to send a verification code to the mail address provided.
+If the bool named "verificationSent" in response data is true, you must have received the mail address.
 
 ##### Parameters
-| Name     | Type   | Description  |
-|----------|--------|--------------|
-| name     | string | First name   |
-| lastName | string | Last name    |
-| mail     | string | Mail address |
-| password | string | Password     |
+| Name         | Type   | Description       |
+|--------------|--------|-------------------|
+| name         | string | First name        |
+| lastName     | string | Last name         |
+| mail         | string | Mail address      |
+| password     | string | Password          |
+| verification | string | Verification code |
 
 ##### Response
     
