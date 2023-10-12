@@ -198,7 +198,17 @@ The module called "Models" is the boilerplate that represents data structures us
     }
     ```
     
+# Coinbase
+
+![Coinbase](/promotions/coinbase.jpg)
+
+[Coinbase's](https://coinbase.com/) free to use public API (v2) is used to fetch crypto exchange data. Here you can find the endpoint below:
+
+`https://api.coinbase.com/v2/exchange-rates?currency=BTC`
+
 # Auto Documentation
+
+![swagger](promotions/swagger.png)
 
 Swagger is a tool that helps developers to create document and test APIs (Application Programming Interfaces) for their software applications.
 
@@ -206,9 +216,9 @@ Swagger needs a configuration file to create documents. This configuration is au
 
 You can read the documentation from "[localhost:8080](http://localhost:8080)" once you started docker.
 
-![swagger](promotions/swagger.png)
-
 # Monitoring
+
+![Prometheus web interface](promotions/grafana.png){:height="36px"}
 
 Prometheus and Grafana are tools used for monitoring and analyzing metrics of a web application. With Grafana and Prometheus, you can analyze a wide range of data, from sales metrics to resource utilization and more.
 
