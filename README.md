@@ -218,17 +218,16 @@ You can read the documentation from "[localhost:8080](http://localhost:8080)" on
 
 # Monitoring
 
-![Prometheus web interface](promotions/grafana.png){:height="36px"}
 
 Prometheus and Grafana are tools used for monitoring and analyzing metrics of a web application. With Grafana and Prometheus, you can analyze a wide range of data, from sales metrics to resource utilization and more.
 
-### Prometheus
+### <img src="promotions/prometheus-logo.png" width="14"> Prometheus
 
 Prometheus is a software that collects "metric" data from the http servers by requesting a specific endpoint at target servers at intervals you specified. The metric data is stored chronologically by the Prometheus. Data can be accessed via web interface or Rest API that Prometheus provides.
 
 ![Prometheus web interface](promotions/prometheus.png)
 
-### Grafana
+### <img src="promotions/grafana.png" width="14"> Grafana
 
 And Grafana is an open source analytics monitoring tool that provides bunch of visual components like (e.g charts, gauges). Grafana can have multiple data sources and Prometheus is one of them. Grafana can request to API of the Prometheus and visualize your chronologically stored metrics data.
 
@@ -244,7 +243,7 @@ I've used traditional local logging functions for the stuff that only concerns d
 
 ![traditional logging](promotions/traditional-logging.png)
 
-### Loki
+### <img src="promotions/loki-logo.png" width="14"> Loki
 Loki is an open-source log aggregation system developed by Grafana Labs. It is designed to help you collect, store, and query log data from various sources in a scalable and efficient manner. 
 
 In this project, I used **Loki** for advanced logging. And I used [zap-loki](https://github.com/paul-milne/zap-loki) library for establishing the connection between Go and Loki.
@@ -260,7 +259,7 @@ The term load testing is used in different ways in the professional software tes
 
 I've used "Grafana K6" to load test this project. K6 has a very simple interface.
 
-### Using K6
+### <img src="promotions/k6-logo.png" width="14"> Using K6
 First, you should create a JavaScript file for K6, as mentioned, named ["scripts/loadtest.js"](scripts/loadtest.js).
 
 This script, using the framework provided by K6, allows you to quickly send load requests to your web application. You can also perform checks on responses using the functions provided by K6.
