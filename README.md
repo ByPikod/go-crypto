@@ -20,6 +20,7 @@ This is a prototype back-end of a crypto application that I developed for my int
     - [Ports](#ports)
     - [Folder Structure](#folder-structure)
     - [Models](#models)
+- [Crypto API](#crypto-api)
 - [Monitoring](#monitoring)
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
@@ -33,8 +34,11 @@ This is a prototype back-end of a crypto application that I developed for my int
 - [Copyright](#copyright)
 
 ## To-do List
-Prepare a prototype crypto wallet REST API and follow the rules below: 
-
+* [x] Implement the following endpoints:
+    * [x] User registration, login and me endpoints.
+    * [x] An endpoint for listing crypto exchanges
+    * [x] Endpoints for selling & buying crypto.
+    * [x] Create a websocket endpoint to live update crypto exchanges.
 * [x] Respond HTTP requests with Fiber
 * [x] Provide a better database interface with GORM.
 * [x] Dockerize the project to avoid version conflicts.
@@ -44,12 +48,20 @@ Prepare a prototype crypto wallet REST API and follow the rules below:
     * [x] BelongsTo,
     * [ ] ManyToMany
 * [x] Use JWT for the authentication.
-* [x] Implement the GORN auto migrate.
+* [x] Use GORN auto migrate.
 * [x] Documentize API with Swagger
-* [ ] Unit tests
-* [x] Mock repository layer for unit tests.
-* [x] Monitoring with Prometheus and Grafana
-* [x] Profile application with load test
+* [ ] Tests
+    * [ ] Unit tests.
+    * [x] Mock repository layer for unit tests.
+* [ ] Monitoring the app
+    * [x] Monitoring with Prometheus and Grafana
+    * [x] Profile application with load test
+    * [x] Monitor logs with Loki and Grafana.
+* [ ] Micro Services
+    * [ ] Create a mail verification system in "Go Crypto".
+    * [ ] Create a mail sender micro service named "Notifier" to send verification mails.
+    * [ ] Connect "Notifier" and "Go Crypto" with **Kafka**
+    * [ ] Use **Apache ZooKeeper** with **Kafka**
 
 ## Installation
 
@@ -198,7 +210,7 @@ The module called "Models" is the boilerplate that represents data structures us
     }
     ```
     
-# Coinbase
+# Crypto API
 
 ![Coinbase](/promotions/coinbase.jpg)
 
