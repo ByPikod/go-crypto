@@ -8,7 +8,7 @@
 ![Watchers](https://img.shields.io/github/watchers/ByPikod/go-crypto.svg?style=for-the-badge)
 
 # Introduction
-This is a prototype back-end of a crypto application that I developed for my internship. 
+This is a prototype back-end of a crypto application that I developed for my internship. Demo
 
 ## Table of Contents
 - [Introduction](#introduction)
