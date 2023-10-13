@@ -1,0 +1,6 @@
+[submodule "notifier"]
+	path = notifier
+	url = https://github.com/ByPikod/go-crypto/tree/notifier
+[submodule "crypto"]
+	path = crypto
+	url = https://github.com/ByPikod/go-crypto/tree/crypto
