@@ -1,5 +1,22 @@
 version: '3.8'
 services:
+  zookeeper:
+      image: wurstmeister/zookeeper
+      container_name: zookeeper
+      ports:
+        - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    depends_on:
+      - zookeeper
   postgres:
     image: postgres:14.1-alpine
     restart: always
@@ -27,6 +44,7 @@ services:
     ports:
       - "80:80"
     depends_on:
+      - kafka
       - postgres
       - loki
     environment:
@@ -36,6 +54,14 @@ services:
       DB_USER: "postgres"
       DB_PASS: "root"
       DB_NAME: "gocrypto"
+  notifier:
+    build:
+      context: notifier  # The location of your Dockerfile (current directory in this case)
+      dockerfile: dockerfile.dev
+    container_name: notifier
+    depends_on:
+      - kafka
+      - loki
   swagger:
     container_name: swagger
     image: swaggerapi/swagger-ui

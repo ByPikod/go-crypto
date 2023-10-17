@@ -116,6 +116,8 @@ The ports exposed by the project are:
 | Postgres   | 5432 | Database                              |
 | Prometheus | 9090 | Metric database.                      |
 | Loki       | 3100 | Log database.                         |
+| ZooKeeper  | 2181 | Micro services.                       |
+| Kafka      | 9092 | Micro services.                       |
 
 Some ports are exposed on development purposes.
 
