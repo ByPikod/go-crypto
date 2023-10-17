@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/ByPikod/go-crypto/tree/crypto/core"
+	"github.com/ByPikod/go-crypto/tree/notifier/core"
 	zaploki "github.com/paul-milne/zap-loki"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
