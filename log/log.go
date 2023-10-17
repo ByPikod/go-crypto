@@ -14,9 +14,18 @@ var (
 	logger *zap.Logger
 )
 
-// Init zap
-func init() {
+// Init logger
+func InitializeLogger() {
+	var err error
+	logger, err = CreateLogger()
+	if err != nil {
+		panic(err)
+	}
+	Info("Loki connection established")
+}
 
+// Create logger instance
+func CreateLogger() (*zap.Logger, error) {
 	//  Create "Loki" hook
 	config := zap.NewProductionConfig()
 	lokiInfo := core.Config.Loki
@@ -31,14 +40,12 @@ func init() {
 	)
 
 	// Create logger
-	var err error
-	logger, err = loki.WithCreateLogger(config)
+	logger, err := loki.WithCreateLogger(config)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	Info("Loki connection established")
-
+	return logger, nil
 }
 
 // Logs the string: An error ocurred at %v controller.

@@ -13,6 +13,7 @@ type (
 	Configuration struct {
 		Database               *DBInfo
 		Loki                   *LokiInfo
+		Kafka                  *KafkaInfo
 		AuthSecret             string
 		Host                   string
 		Listen                 string
@@ -32,13 +33,18 @@ type (
 	LokiInfo struct {
 		Host string
 	}
+	// KafkaInfo struct contains authentication information for the Kafka.
+	KafkaInfo struct {
+		Host string
+	}
 )
 
 // It will be nil if config haven't been initialized.
 var Config *Configuration
 
-func init() {
-	Config = InitializeConfig()
+// Initialize config
+func InitializeConfig() {
+	Config = CreateConfig()
 }
 
 func or(x string, y string) string {
@@ -91,7 +97,7 @@ func parseDuration(value string) (time.Duration, error) {
 
 // Initializes config and makes Config variable above ready to use by loading environment variables.
 // ".env" is supported.
-func InitializeConfig() *Configuration {
+func CreateConfig() *Configuration {
 
 	err := godotenv.Load()
 	if err != nil {
@@ -110,9 +116,14 @@ func InitializeConfig() *Configuration {
 		Host: or(os.Getenv("LOKI_HOST"), "http://loki:3100"),
 	}
 
+	kafka := &KafkaInfo{
+		Host: or(os.Getenv("KAFKA_HOST"), "kafka:9092"),
+	}
+
 	config := Configuration{
 		Database:               db,
 		Loki:                   loki,
+		Kafka:                  kafka,
 		AuthSecret:             or(os.Getenv("AUTH_SECRET"), "32f97916299787f211b5111e6da178b1"),
 		Host:                   or(os.Getenv("HOST"), ""),
 		Listen:                 or(os.Getenv("LISTEN"), "80"),

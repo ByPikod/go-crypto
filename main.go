@@ -4,6 +4,8 @@ import (
 	"github.com/ByPikod/go-crypto/tree/crypto/controllers"
 	"github.com/ByPikod/go-crypto/tree/crypto/core"
 	"github.com/ByPikod/go-crypto/tree/crypto/helpers"
+	"github.com/ByPikod/go-crypto/tree/crypto/kafka"
+	"github.com/ByPikod/go-crypto/tree/crypto/log"
 	"github.com/ByPikod/go-crypto/tree/crypto/middleware"
 	"github.com/ByPikod/go-crypto/tree/crypto/models"
 	"github.com/ByPikod/go-crypto/tree/crypto/repositories"
@@ -32,8 +34,17 @@ import (
 func main() {
 
 	// Load configuration from environment variables
+	core.InitializeConfig()
 	config := core.Config
 	helpers.LogInfo("Initialized config")
+
+	// Logger
+	log.InitializeLogger()
+	helpers.LogInfo("Logger initialized!")
+
+	// Micro services
+	kafka.InitializeNotifier()
+	helpers.LogInfo("Micro service initialized: Notifier")
 
 	// Initialize database with config above
 	db := core.InitializeDatabase(config.Database)

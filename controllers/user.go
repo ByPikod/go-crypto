@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/ByPikod/go-crypto/tree/crypto/helpers"
+	"github.com/ByPikod/go-crypto/tree/crypto/kafka"
 	"github.com/ByPikod/go-crypto/tree/crypto/log"
 	"github.com/ByPikod/go-crypto/tree/crypto/models"
 	"github.com/ByPikod/go-crypto/tree/crypto/services"
@@ -144,7 +145,11 @@ func (controller UserController) Register(ctx *fiber.Ctx) error {
 		}
 
 		// connect kafka and put mail to queue
-		// ...
+		kafka.GetNotifier().SendMail(
+			payload.Mail,
+			"Mail Verification",
+			code,
+		)
 
 		// Log
 		log.Info(
