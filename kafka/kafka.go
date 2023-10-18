@@ -1,7 +1,7 @@
 package kafka
 
 import (
-	"github.com/ByPikod/go-crypto/tree/notifier/core"
+	"github.com/ByPikod/go-crypto/tree/crypto/core"
 	Kafka "github.com/segmentio/kafka-go"
 )
 

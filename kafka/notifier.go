@@ -44,12 +44,12 @@ func (notifier *Notifier) SendMail(
 		return err
 	}
 
-	notifier.kafka.WriteMessages(
+	err = notifier.kafka.WriteMessages(
 		context.Background(),
 		Kafka.Message{
 			Value: bytes,
 		},
 	)
 
-	return nil
+	return err
 }

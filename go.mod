@@ -9,6 +9,7 @@ require (
 	github.com/gofiber/websocket/v2 v2.2.1
 	github.com/joho/godotenv v1.5.1
 	github.com/paul-milne/zap-loki v0.2.0
+	github.com/segmentio/kafka-go v0.4.44
 	github.com/swaggo/swag v1.16.2
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.14.0
@@ -17,10 +18,8 @@ require (
 )
 
 require (
-	github.com/confluentinc/confluent-kafka-go/v2 v2.2.0 // indirect
 	github.com/gofiber/adaptor/v2 v2.2.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
-	github.com/segmentio/kafka-go v0.4.44 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 )
 
