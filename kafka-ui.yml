@@ -1,13 +1,14 @@
+auth:
+  type: DISABLED
 kafka:
   clusters:
-    -
-      name: local
-      bootstrapServers: kafka:9092
-      schemaRegistry: http://localhost:8080
-      schemaRegistryAuth:
-        username: admin
-        password: root
-#     schemaNameTemplate: "%s-value"
-      metrics:
-        port: 9997
-        type: JMX
+  - bootstrapServers: kafka:9092
+    metrics:
+      port: 9997
+      type: PROMETHEUS
+    name: local
+    properties: {}
+    readOnly: false
+rbac:
+  roles: []
+webclient: {}
