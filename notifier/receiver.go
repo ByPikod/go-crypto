@@ -1,4 +1,4 @@
-package kafka
+package notifier
 
 import (
 	"context"
@@ -6,9 +6,7 @@ import (
 
 	"github.com/ByPikod/go-crypto/tree/notifier/core"
 	"github.com/ByPikod/go-crypto/tree/notifier/helpers"
-	"github.com/ByPikod/go-crypto/tree/notifier/log"
 	Kafka "github.com/segmentio/kafka-go"
-	"go.uber.org/zap"
 )
 
 type (
@@ -32,17 +30,14 @@ func CreateConsumer() *Consumer {
 	return consumer
 }
 
-func (consumer *Consumer) ReadQueue() {
+func (consumer *Consumer) ReadQueue(callback func(Kafka.Message)) {
 	for {
 		m, err := consumer.conn.ReadMessage(context.Background())
 		if err != nil {
 			helpers.LogError(err.Error())
 			break
 		}
-		log.Info(
-			"Mail sent",
-			zap.String("json", string(m.Value)),
-		)
+		callback(m)
 	}
 
 	if err := consumer.conn.Close(); err != nil {
