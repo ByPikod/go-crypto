@@ -1,6 +1,7 @@
 # Use the official Go image as a parent image
 FROM golang:latest
 LABEL org.opencontainers.image.source=https://github.com/ByPikod/Go-Crypto
+LABEL org.opencontainers.image.authors="admin@yahyabatulu.com"
 
 # Set the working directory inside the container
 WORKDIR /app
