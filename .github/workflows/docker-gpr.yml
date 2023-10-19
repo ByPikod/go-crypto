@@ -18,7 +18,7 @@ jobs:
       uses: machine-learning-apps/gpr-docker-publish@master
       id: docker
       with:
-        IMAGE_NAME: 'go-crypto'
+        IMAGE_NAME: 'crypto'
         DOCKERFILE_PATH: 'dockerfile'
         BUILD_CONTEXT: '.'
       env:
