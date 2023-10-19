@@ -8,10 +8,15 @@
 ![Watchers](https://img.shields.io/github/watchers/ByPikod/go-crypto.svg?style=for-the-badge)
 
 # Introduction
-This is a prototype back-end of a crypto application that I developed for my internship. Demo
+This project is the back-end prototype of a crypto wallet application I developed with the Go programming language during my internship at [ProxoLab](https://www.proxolab.com/) company.
+
+I would also like to mention that I learned the Go programming language alongside this project. Additionally, this project allowed me to learn various DevOps concepts. 
+
+When I started writing the project, I had searched for many such examples, but the examples I found always had shortcomings. I am sure that there are many aspects of this project that can be improved. However, I believe it is an excellent example project because I designed it with this year's most commonly used technologies and best practices.
 
 ## Table of Contents
 - [Introduction](#introduction)
+    - [Table of Contents](#table-of-contents)
     - [To-do List](#to-do-list)
     - [Installation](#installation)
     - [Developer Tips](#developer-tips)
@@ -30,10 +35,13 @@ This is a prototype back-end of a crypto application that I developed for my int
 - [Load Test](#load-test)
     - [Using K6](#using-k6)
     - [Monitoring Test Results](#monitoring-test-results)
+- [Horizontally Scaling](#horizontally-scaling)
 - [API Documentation](#api)
 - [Copyright](#copyright)
 
 ## To-do List
+While working on this project, you can find below the expectations that the company I interned at had from me:
+
 * [x] Implement the following endpoints:
     * [x] User registration, login and me endpoints.
     * [x] An endpoint for listing crypto exchanges
@@ -65,9 +73,14 @@ This is a prototype back-end of a crypto application that I developed for my int
 
 ## Installation
 
+You can run the project on your machine by following the steps below:
+
 ### Requirements
-* [git-cli](https://git-scm.com/downloads)
-* [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04#step-1-installing-docker-compose)
+
+Tools you need to run the project:
+
+* [git-cli:](https://git-scm.com/downloads) Used to download the project to your device.
+* [docker-compose:](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04#step-1-installing-docker-compose) Used to quickly install required images (eg. PostgreSQL, Loki, Grafana).
 
 ### Installation
 
@@ -85,7 +98,10 @@ This is a prototype back-end of a crypto application that I developed for my int
 
 # Project Design
 
+This project is a REST API project, and it has been built using the [Multitier Architecture](https://en.wikipedia.org/wiki/Multitier_architecture) design. The Multitier Architecture design is a REST API pattern consisting of layers named Controller (Presentation), Service (Business), and Repository (Persistence).
+
 ### Technologies
+You can find the technologies used in this project below:
 
 * **Go:** Programming language.
 * Libraries/Frameworks
@@ -284,6 +300,29 @@ K6 is originally designed to export metrics to a data source called InfluxDB. Ho
 The output obtained from Prometheus can be visualized using the Grafana interface, as explained in the "Monitoring" section.
 
 ![loadtest monitoring](promotions/loadtest.png)
+
+# Horizontally Scaling
+
+<img align="right" alt="Horizontal vs Verical scaling up" src="promotions/verticalvshorizontal.png" width="300px">
+
+To understand what is Horizontally Scaling, first you should know what is Verical Scaling.
+
+**Vertical scaling**, aka. scaling up, is a method used to increase the capacity and performance of a single server or machine by adding more resources to it (eg. RAM, CPU).
+
+And **Horizontal scaling**,  aka. scaling out, is a method used to increase the capacity and performance of a system by adding more machines or nodes to a network or cluster.
+
+
+## Kubernetes
+Kubernetes is an open-source container orchestration platform used for automating the deployment, scaling, and management of containerized applications.
+
+Kubernetes can automatically scale your applications based on demand, ensuring that you have the right amount of resources to handle your workload.
+
+You can scale out **Go-Crypto** by the following steps:
+
+* Install Kubarnetes
+* Apply configuration files: `kubectl apply -f .\kubernetes\`
+
+![Kubernetes](promotions/kubernetes.png)
 
 # API
 

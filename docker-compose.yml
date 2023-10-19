@@ -48,11 +48,11 @@ services:
     command: -config.file=/local-config.yaml
     volumes:
       - ./loki-config.yml:/local-config.yaml
-  gocrypto:
+  crypto:
     build:
       context: crypto  # The location of your Dockerfile (current directory in this case)
       dockerfile: dockerfile.dev
-    container_name: gocrypto
+    container_name: crypto
     ports:
       - "80:80"
     depends_on:
@@ -95,7 +95,7 @@ services:
       - '--web.enable-remote-write-receiver'
       - '--enable-feature=native-histograms'
     depends_on:
-      - gocrypto
+      - crypto
   grafana:
     image: grafana/grafana:latest
     container_name: grafana

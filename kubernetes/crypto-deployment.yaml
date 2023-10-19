@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crypto
+  labels:
+    app: crypto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crypto
+  template:
+    metadata:
+      labels:
+        app: crypto
+    spec:
+      containers:
+        - name: crypto
+          image: ghcr.io/bypikod/go-crypto/crypto:latest
+          env:
+            - name: AUTH_SECRET
+              value: 32f97916299787f211b5111e6da178b1
+            - name: DB_HOST
+              value: postgres
+            - name: DB_NAME
+              value: gocrypto
+            - name: DB_PASS
+              value: root
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: postgres
+          ports:
+            - containerPort: 80
+              hostPort: 80
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+status: {}
