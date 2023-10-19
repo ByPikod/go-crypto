@@ -20,7 +20,7 @@ jobs:
         DOCKERFILE_PATH: 'dockerfile'
         BUILD_CONTEXT: '.'
       env:
-        GITHUB_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLISH_GITHUB_SECRET }}
 
     # This second step is illustrative and shows how to reference the 
     # output variables.  This is completely optional.
