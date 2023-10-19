@@ -2,14 +2,16 @@ name: Publish Docker image to GPR
 on:
   release:
     types: [created]
-    branches:
-      - crypto
 jobs:
   build:
+    # Checkout
     runs-on: ubuntu-latest 
     steps:
     - name: Copy Repo Files
       uses: actions/checkout@master
+      with:
+        ref: 'crypto'
+
      #This Action Emits 2 Variables, IMAGE_SHA_NAME and IMAGE_URL 
      #which you can reference in subsequent steps
     - name: Publish Docker Image to GPR
