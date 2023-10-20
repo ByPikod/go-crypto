@@ -1,3 +1,5 @@
+# Introduction
+
 ![Framework](promotions/banner.png)
 
 ![License](https://img.shields.io/github/license/ByPikod/go-crypto.svg?style=for-the-badge)
@@ -7,100 +9,202 @@
 ![Stars](https://img.shields.io/github/stars/ByPikod/go-crypto.svg?style=for-the-badge)
 ![Watchers](https://img.shields.io/github/watchers/ByPikod/go-crypto.svg?style=for-the-badge)
 
-# Introduction
 This project is the back-end prototype of a crypto wallet application I developed with the Go programming language during my internship at [ProxoLab](https://www.proxolab.com/) company.
 
-I would also like to mention that I learned the Go programming language alongside this project. Additionally, this project allowed me to learn various DevOps concepts. 
+I would also like to mention that I learned the Go programming language alongside this project. Additionally, this project allowed me to learn various DevOps concepts.
 
 When I started writing the project, I had searched for many such examples, but the examples I found always had shortcomings. I am sure that there are many aspects of this project that can be improved. However, I believe it is an excellent example project because I designed it with this year's most commonly used technologies and best practices.
 
 ## Table of Contents
+
 - [Introduction](#introduction)
-    - [Table of Contents](#table-of-contents)
-    - [To-do List](#to-do-list)
+  - [Table of Contents](#table-of-contents)
+  - [To-do List](#to-do-list)
+  - [Developer Tips](#developer-tips)
+- [Getting Started](#getting-started)
+  - [Compose Setup](#compose-setup)
+    - [Requirements](#requirements)
     - [Installation](#installation)
-    - [Developer Tips](#developer-tips)
+  - [Kubernetes Setup](#kubernetes-setup)
+    - [Kubectl](#kubectl)
+    - [Monitoring Kubernetes](#monitoring-kubernetes)
+      - [Lens](#lens)
+      - [Docker Desktop](#docker-desktop)
 - [Project Design](#project-design)
-    - [Technologies](#technologies)
-    - [Ports](#ports)
-    - [Folder Structure](#folder-structure)
-    - [Models](#models)
+  - [Technologies](#technologies)
+  - [Ports](#ports)
+  - [Folder Structure](#folder-structure)
+  - [Models](#models)
 - [Crypto API](#crypto-api)
+- [Auto Documentation](#auto-documentation)
+  - [Swagger](#-swagger)
+  - [Swaggo](#-swaggo)
 - [Monitoring](#monitoring)
-    - [Prometheus](#prometheus)
-    - [Grafana](#grafana)
+  - [Prometheus](#-prometheus)
+  - [Grafana](#-grafana)
 - [Logging](#logging)
-    - [Traditional Logging](#traditional-logging)
-    - [Loki](#loki)
+  - [Traditional Logging](#traditional-logging)
+  - [Loki](#-loki)
 - [Load Test](#load-test)
-    - [Using K6](#using-k6)
-    - [Monitoring Test Results](#monitoring-test-results)
-- [Horizontally Scaling](#horizontally-scaling)
-- [API Documentation](#api)
+  - [Using K6](#-using-k6)
+  - [Monitoring Test Results](#monitoring-test-results)
+- [API](#api)
+- [Websocket](#websocket)
 - [Copyright](#copyright)
 
 ## To-do List
 While working on this project, you can find below the expectations that the company I interned at had from me:
 
-* [x] Implement the following endpoints:
-    * [x] User registration, login and me endpoints.
-    * [x] An endpoint for listing crypto exchanges
-    * [x] Endpoints for selling & buying crypto.
-    * [x] Create a websocket endpoint to live update crypto exchanges.
-* [x] Respond HTTP requests with Fiber
-* [x] Provide a better database interface with GORM.
-* [x] Dockerize the project to avoid version conflicts.
-* [ ] Use the following database relationships: 
-    * [x] HasMany, 
-    * [ ] HasOne, 
-    * [x] BelongsTo,
-    * [ ] ManyToMany
-* [x] Use JWT to authenticate user.
-* [x] Use GORM to migrate models.
-* [x] Documentize the API with Swagger
-* [ ] Test the app
-    * [ ] Unit tests.
-    * [x] Mock repository layer for unit tests.
-* [x] Monitor the app
-    * [x] Monitoring with Prometheus and Grafana
-    * [x] Profile application with load test
-    * [x] Monitor logs with Loki and Grafana.
-* [ ] Create a micro service
-    * [ ] Create a mail verification system for "Go Crypto".
-    * [ ] Create a mail sender micro service named "Notifier" to send verification mails.
-    * [ ] Connect "Notifier" and "Go Crypto" with **Kafka**
-    * [ ] Use **Apache ZooKeeper** with **Kafka**
+- [x] Implement the following endpoints:
+  - [x] User registration, login and me endpoints.
+  - [x] An endpoint for listing crypto exchanges
+  - [x] Endpoints for selling & buying crypto.
+  - [x] Create a websocket endpoint to live update crypto exchanges.
+- [x] Respond HTTP requests with Fiber
+- [x] Provide a better database interface with GORM.
+- [x] Dockerize the project to avoid version conflicts.
+- [ ] Use the following database relationships:
+  - [x] HasMany,
+  - [ ] HasOne,
+  - [x] BelongsTo,
+  - [ ] ManyToMany
+- [x] Use JWT to authenticate user.
+- [x] Use GORM to migrate models.
+- [x] Documentize the API with Swagger
+- [ ] Test the app
+  - [ ] Unit tests.
+  - [x] Mock repository layer for unit tests.
+- [x] Monitor the app
+  - [x] Monitoring with Prometheus and Grafana
+  - [x] Profile application with load test
+  - [x] Monitor logs with Loki and Grafana.
+- [ ] Create a micro service
+  - [ ] Create a mail verification system for "Go Crypto".
+  - [ ] Create a mail sender micro service named "Notifier" to send verification mails.
+  - [ ] Connect "Notifier" and "Go Crypto" with **Kafka**
+  - [ ] Use **Apache ZooKeeper** with **Kafka**
 
-## Installation
+## Developer Tips
 
-You can run the project on your machine by following the steps below:
+- File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
+- You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
+- Credentials for Grafana:
+  - Username: `admin`
+  - Password: `root`
+
+# Getting Started
+
+![Docker](promotions/docker-banner.png)
+
+As you probably know, running a single Go file is not so hard. But when it comes to running a project with multiple dependencies, it gets a little bit complicated. And **Docker** comes to the rescue in this situation. **You can run the project with a single command using Docker**. You also need Docker for deployment purposes.
+
+Docker is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and deploy it as one package.
+
+Docker can get your project up and running in a few minutes. But that's not enough for a project like this. You need to monitor your project, test it, and more. And for that you need to install some other tools like **Prometheus**, **Grafana**, **K6**, **Postgres**.
+
+- [**Compose Setup:**](#compose-setup) Used for development purposes.
+- [**Kubernetes Setup:**](#kubernetes-setup) Used for production purposes.
+
+> [!NOTE]  
+> **Both ways uses Docker Engine to run the project. You can install Docker Engine from [here](https://docs.docker.com/engine/install/).**
+
+## Compose Setup
+
+Compose Setup uses Docker Compose to run the project. Which is a tool designed to run multi-container applications. You need to configure a file named ["docker-compose.yml"](docker-compose.yml) to install all the containers needed and run the project. You can Click [here](https://docs.docker.com/compose/) to learn more about Docker Compose.
+
+Go Crypto runs with the following containers:
+
+
+| Container   | Description                                  |
+|-------------|----------------------------------------------|
+| Go-Crypto   | Runs the main project. Docker file can be found at project directory. |
+| Notifier    | Runs the micro service that sends the mails. |
+| K6          | Runs a script that simulates connection load to test servers. |
+| Postgres    | Database to store user data.                 |
+| Prometheus  | Database to store metric data.               |
+| Loki        | Database to store logs.                      |
+| Grafana     | Analytics visualizer interface.              |
+| ZooKeeper   | Micro service manager.                       |
+| Kafka       | Queue for micro services.                    |
+| Kafka UI    | Interface for kafka. Used for development purposes |
+
+These containers all work together to run the project.
 
 ### Requirements
 
-Tools you need to run the project:
+You need to install the following tools to run the project with Docker Compose:
 
-* [git-cli:](https://git-scm.com/downloads) Used to download the project to your device.
-* [docker-compose:](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04#step-1-installing-docker-compose) Used to quickly install required images (eg. PostgreSQL, Loki, Grafana).
+- [git-cli:](https://git-scm.com/downloads) Used to download the project to your device.
+- [docker-compose:](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04#step-1-installing-docker-compose) Used to quickly install required images (eg. PostgreSQL, Loki, Grafana).
 
 ### Installation
 
-* Clone repository: `git clone https://www.github.com/ByPikod/go-crypto.git`
-* Run docker-compose: `docker-compose up`
+- Clone repository: `git clone https://www.github.com/ByPikod/go-crypto.git`
+- Run docker-compose: `docker-compose up`
+  - Optionally add "-d" arg to run at background: `docker-compose up -d`
 
-    * Optionally add "-d" arg to run at background: `docker-compose up -d`    
+## Kubernetes Setup
 
-## Developer Tips
-* File **"dockerfile.dev"** is in use for development purposes. You can change **"build"** property of **"gocrypto"** container from **docker-compose.yml**
-* You can set **"HOST"** environment variable to listen to a specific domain with Fiber.
-* Credentials for Grafana:
-    * Username: `admin`
-    * Password: `root`
+![Kubernetes](promotions/kubernetes.png)
+
+Kubernetes is an open-source container orchestration platform used for automating the deployment, scaling, and management of containerized applications.
+
+Kubernetes can automatically scale your applications based on demand, ensuring that you have the right amount of resources to handle your workload.
+
+<img align="right" alt="Horizontal vs Verical scaling up" src="promotions/verticalvshorizontal.png" width="300px">
+
+To understand what is Horizontally Scaling, first you should know what is Verical Scaling.
+
+**Vertical scaling**, aka. scaling up, is a method used to increase the capacity and performance of a single server or machine by adding more resources to it (eg. RAM, CPU).
+
+And **Horizontal scaling**,  aka. scaling out, is a method used to increase the capacity and performance of a system by adding more machines or nodes to a network or cluster.
+
+You can scale out **Go-Crypto** by the following steps:
+
+* Install Kubarnetes
+* Apply configuration files: `kubectl apply -f .\kubernetes\`
+
+And that's it, you are ready to go!
+
+### Kubectl
+
+Kubectl is a command-line tool that allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs.
+
+You can find some useful commands below:
+
+- Listing
+  - `kubectl get pods` - List all pods
+  - `kubectl get services` - List all services
+  - `kubectl get deployments` - List all deployments
+  - `kubectl get nodes` - List all nodes
+- Deleting Pods
+  - `kubectl delete <type> <pod-name>` - Delete pods, services, deployments (Used to restart pods)
+  - `kubectl delete <type> -l label=<label-value>` - Delete all pods, services, deployments, etc. by a label.
+  - `kubectl delete <type> --all` - Delete all pods, services, deployments, etc of a type.
+- Logs
+  - `kubectl logs <pod-name>` - Get logs of a pod.
+- Executing commands
+  - `kubectl exec -it <pod-name> -- <command>` - Execute a command in a pod.
+
+### Monitoring Kubernetes
+
+#### Lens
+
+[Lens](https://k8slens.dev/) is a powerful IDE for Kubernetes. It is a standalone application for MacOS, Windows and Linux operating systems. You can use Lens to monitor your Kubernetes cluster.
+
+![Lens](promotions/lens.jpg)
+
+#### Docker Desktop
+
+Another tool you can use to monitor your Kubernetes cluster is [Docker Desktop](https://www.docker.com/products/docker-desktop). Docker Desktop is a tool for MacOS and Windows machines for the building and sharing of containerized applications and microservices.
+
+![Docker Desktop](promotions/docker-desktop.png)
 
 # Project Design
 
 This project is a REST API project, and it has been built using the [Multitier Architecture](https://en.wikipedia.org/wiki/Multitier_architecture) design. The Multitier Architecture design is a REST API pattern consisting of layers named Controller (Presentation), Service (Business), and Repository (Persistence).
 
-### Technologies
+###s Technologies
 You can find the technologies used in this project below:
 
 * **Go:** Programming language.
@@ -248,7 +352,6 @@ You can read the documentation from "[localhost:8080](http://localhost:8080)" on
 
 # Monitoring
 
-
 Prometheus and Grafana are tools used for monitoring and analyzing metrics of a web application. With Grafana and Prometheus, you can analyze a wide range of data, from sales metrics to resource utilization and more.
 
 ### <img src="promotions/prometheus-logo.png" width="14"> Prometheus
@@ -300,29 +403,6 @@ K6 is originally designed to export metrics to a data source called InfluxDB. Ho
 The output obtained from Prometheus can be visualized using the Grafana interface, as explained in the "Monitoring" section.
 
 ![loadtest monitoring](promotions/loadtest.png)
-
-# Horizontally Scaling
-
-<img align="right" alt="Horizontal vs Verical scaling up" src="promotions/verticalvshorizontal.png" width="300px">
-
-To understand what is Horizontally Scaling, first you should know what is Verical Scaling.
-
-**Vertical scaling**, aka. scaling up, is a method used to increase the capacity and performance of a single server or machine by adding more resources to it (eg. RAM, CPU).
-
-And **Horizontal scaling**,  aka. scaling out, is a method used to increase the capacity and performance of a system by adding more machines or nodes to a network or cluster.
-
-
-## Kubernetes
-Kubernetes is an open-source container orchestration platform used for automating the deployment, scaling, and management of containerized applications.
-
-Kubernetes can automatically scale your applications based on demand, ensuring that you have the right amount of resources to handle your workload.
-
-You can scale out **Go-Crypto** by the following steps:
-
-* Install Kubarnetes
-* Apply configuration files: `kubectl apply -f .\kubernetes\`
-
-![Kubernetes](promotions/kubernetes.png)
 
 # API
 
