@@ -148,8 +148,7 @@ Kubernetes is an open-source container orchestration platform used for automatin
 
 Kubernetes can automatically scale your applications based on demand, ensuring that you have the right amount of resources to handle your workload.
 
-<img
-    align="right"
+<img align="right"
     alt="Horizontal vs Verical scaling up"
     src="promotions/verticalvshorizontal.png"
     width="300px">
@@ -165,7 +164,15 @@ You can scale out **Go-Crypto** by the following steps:
 - Install Kubarnetes
 - Apply configuration files: `kubectl apply -f .\kubernetes\`
 
-And that's it, you are ready to go!
+And that's it, you are ready to go! Kubernetes will automatically boot up the containers and scale them based on demand. Altho you will still need to run the other containers with docker-compose.
+
+Here is the list of containers that will be running with Kubernetes:
+
+- Go-Crypto
+- Notifier
+- Postgres
+
+Beside these containers, you will still need to run the rest of the containers with docker-compose.
 
 ### Kubectl
 
