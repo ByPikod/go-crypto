@@ -27,11 +27,8 @@ When I started writing the project, I had searched for many such examples, but t
     - [Installation](#installation)
   - [Kubernetes Setup](#kubernetes-setup)
     - [Kubectl](#kubectl)
-    - [Monitoring Kubernetes](#monitoring-kubernetes)
       - [Lens](#lens)
-      - [Docker Desktop](#docker-desktop)
 - [Project Design](#project-design)
-  - [Technologies](#technologies)
   - [Ports](#ports)
   - [Folder Structure](#folder-structure)
   - [Models](#models)
@@ -53,6 +50,7 @@ When I started writing the project, I had searched for many such examples, but t
 - [Copyright](#copyright)
 
 ## To-do List
+
 While working on this project, you can find below the expectations that the company I interned at had from me:
 
 - [x] Implement the following endpoints:
@@ -78,11 +76,11 @@ While working on this project, you can find below the expectations that the comp
   - [x] Monitoring with Prometheus and Grafana
   - [x] Profile application with load test
   - [x] Monitor logs with Loki and Grafana.
-- [ ] Create a micro service
-  - [ ] Create a mail verification system for "Go Crypto".
-  - [ ] Create a mail sender micro service named "Notifier" to send verification mails.
-  - [ ] Connect "Notifier" and "Go Crypto" with **Kafka**
-  - [ ] Use **Apache ZooKeeper** with **Kafka**
+- [x] Create a micro service
+  - [x] Create a mail verification system for "Go Crypto".
+  - [x] Create a mail sender micro service named "Notifier" to send verification mails.
+  - [x] Connect "Notifier" and "Go Crypto" with **Kafka**
+  - [x] Use **Apache ZooKeeper** with **Kafka**
 
 ## Developer Tips
 
@@ -113,7 +111,6 @@ Docker can get your project up and running in a few minutes. But that's not enou
 Compose Setup uses Docker Compose to run the project. Which is a tool designed to run multi-container applications. You need to configure a file named ["docker-compose.yml"](docker-compose.yml) to install all the containers needed and run the project. You can Click [here](https://docs.docker.com/compose/) to learn more about Docker Compose.
 
 Go Crypto runs with the following containers:
-
 
 | Container   | Description                                  |
 |-------------|----------------------------------------------|
@@ -151,7 +148,12 @@ Kubernetes is an open-source container orchestration platform used for automatin
 
 Kubernetes can automatically scale your applications based on demand, ensuring that you have the right amount of resources to handle your workload.
 
-<img align="right" alt="Horizontal vs Verical scaling up" src="promotions/verticalvshorizontal.png" width="300px">
+<img
+    align="right"
+    alt="Horizontal vs Verical scaling up"
+    src="promotions/verticalvshorizontal.png"
+    width="300px"
+>
 
 To understand what is Horizontally Scaling, first you should know what is Verical Scaling.
 
@@ -161,8 +163,8 @@ And **Horizontal scaling**,  aka. scaling out, is a method used to increase the 
 
 You can scale out **Go-Crypto** by the following steps:
 
-* Install Kubarnetes
-* Apply configuration files: `kubectl apply -f .\kubernetes\`
+- Install Kubarnetes
+- Apply configuration files: `kubectl apply -f .\kubernetes\`
 
 And that's it, you are ready to go!
 
@@ -186,45 +188,38 @@ You can find some useful commands below:
 - Executing commands
   - `kubectl exec -it <pod-name> -- <command>` - Execute a command in a pod.
 
-### Monitoring Kubernetes
-
-#### Lens
+### Lens
 
 [Lens](https://k8slens.dev/) is a powerful IDE for Kubernetes. It is a standalone application for MacOS, Windows and Linux operating systems. You can use Lens to monitor your Kubernetes cluster.
 
 ![Lens](promotions/lens.jpg)
 
-#### Docker Desktop
-
-Another tool you can use to monitor your Kubernetes cluster is [Docker Desktop](https://www.docker.com/products/docker-desktop). Docker Desktop is a tool for MacOS and Windows machines for the building and sharing of containerized applications and microservices.
-
-![Docker Desktop](promotions/docker-desktop.png)
-
 # Project Design
 
 This project is a REST API project, and it has been built using the [Multitier Architecture](https://en.wikipedia.org/wiki/Multitier_architecture) design. The Multitier Architecture design is a REST API pattern consisting of layers named Controller (Presentation), Service (Business), and Repository (Persistence).
 
-###s Technologies
+## Technologies
+
 You can find the technologies used in this project below:
 
-* **Go:** Programming language.
-* Libraries/Frameworks
-    * **Gorn:** Database management
-    * **Fiber:** HTTP library.
-    * **JWT:** Auth standard.
-* Documentation
-    * **Swagger:** Rest API documentation.
-    * **Swaggo:** Auto config generator for Swagger
-* Database
-    * **Postgres:** Database
-    * **Prometheus:** Analytics collector.
-* Tools
-    * **Grafana:** Analytics visualizer.
-    * **Air:** Live reload tool for go projects.
-    * **Git:** Version control system
-    * **Docker:** Containerization platform.
+- **Go:** Programming language.
+- Libraries/Frameworks
+  - **Gorn:** Database management
+  - **Fiber:** HTTP library.
+  - **JWT:** Auth standard.
+- Documentation
+  - **Swagger:** Rest API documentation.
+  - **Swaggo:** Auto config generator for Swagger
+- Database
+  - **Postgres:** Database
+  - **Prometheus:** Analytics collector.
+- Tools
+  - **Grafana:** Analytics visualizer.
+  - **Air:** Live reload tool for go projects.
+  - **Git:** Version control system
+  - **Docker:** Containerization platform.
 
-### Ports
+## Ports
 
 The ports exposed by the project are:
 
@@ -241,7 +236,8 @@ The ports exposed by the project are:
 
 Some ports are exposed on development purposes.
 
-### Folder Structure
+## Folder Structure
+
 This project follows common designs used in the back-end of web applications. Here is the project tree with comments explaining the modules, files, and their purposes:
 
 ```py
@@ -289,19 +285,21 @@ This project follows common designs used in the back-end of web applications. He
 
 The module called "Models" is the boilerplate that represents data structures used in the background of web applications. Models are used to introduce raw data into the programming language being used. Here are the models for this project:
 
-* **User:** Holds user data. Password encrypted with bcrypt.
+- **User:** Holds user data. Password encrypted with bcrypt.
+  
     ```go
-    type User struct {
+      type User struct {
         gorm.Model
         Name     string   `json:"name" gorm:"not null"`
         Lastname string   `json:"lastName" gorm:"not null"`
         Mail     string   `json:"mail" gorm:"index;not null;unique"`
         Password string   `json:"password" gorm:"not null"`
         Wallets  []Wallet `gorm:"foreignKey:UserID"` // HasMany
-    }
+      }
     ```
 
-* **Wallet:** User can have multiple wallets with different currencies for each one. These wallets can have transactions histories.
+- **Wallet:** User can have multiple wallets with different currencies for each one. These wallets can have transactions histories.
+
     ```go
     type Wallet struct {
         gorm.Model
@@ -313,7 +311,8 @@ The module called "Models" is the boilerplate that represents data structures us
     }
     ```
 
-* **Transaction:** Transaction history holds the history of transactions as the name describes.
+- **Transaction:** Transaction history holds the history of transactions as the name describes.
+
     ```go
     type Transaction struct {
         gorm.Model
@@ -324,14 +323,16 @@ The module called "Models" is the boilerplate that represents data structures us
         Wallet   Wallet  `gorm:"foreignKey:WalletID"` // BelongsTo
     }
     ```
-* **Exchanges:** This model holds the exchange data received from API.
+
+- **Exchanges:** This model holds the exchange data received from API.
+
     ```go
     type ExchangeRates struct {
-	    Currency string             `json:"currency"`
-	    Rates    map[string]float64 `json:"rates"`
+        Currency string             `json:"currency"`
+        Rates    map[string]float64 `json:"rates"`
     }
     ```
-    
+
 # Crypto API
 
 ![Coinbase](/promotions/coinbase.jpg)
@@ -342,10 +343,12 @@ The module called "Models" is the boilerplate that represents data structures us
 
 # Auto Documentation
 
-### <img src="promotions/swagger.png" width="12"> Swagger
+## <img src="promotions/swagger.png" width="12"> Swagger
+
 Swagger is a tool that helps developers to create document and test APIs (Application Programming Interfaces) for their software applications.
 
-### <img src="promotions/swaggo.png" width="12"> Swaggo
+## <img src="promotions/swaggo.png" width="12"> Swaggo
+
 Swagger needs a configuration file to create documents. This configuration is automatically generated by **Swaggo** from your comment lines.
 
 You can read the documentation from "[localhost:8080](http://localhost:8080)" once you started docker.
@@ -354,13 +357,13 @@ You can read the documentation from "[localhost:8080](http://localhost:8080)" on
 
 Prometheus and Grafana are tools used for monitoring and analyzing metrics of a web application. With Grafana and Prometheus, you can analyze a wide range of data, from sales metrics to resource utilization and more.
 
-### <img src="promotions/prometheus-logo.png" width="14"> Prometheus
+## <img src="promotions/prometheus-logo.png" width="14"> Prometheus
 
 Prometheus is a software that collects "metric" data from the http servers by requesting a specific endpoint at target servers at intervals you specified. The metric data is stored chronologically by the Prometheus. Data can be accessed via web interface or Rest API that Prometheus provides.
 
 ![Prometheus web interface](promotions/prometheus.png)
 
-### <img src="promotions/grafana.png" width="14"> Grafana
+## <img src="promotions/grafana.png" width="14"> Grafana
 
 And Grafana is an open source analytics monitoring tool that provides bunch of visual components like (e.g charts, gauges). Grafana can have multiple data sources and Prometheus is one of them. Grafana can request to API of the Prometheus and visualize your chronologically stored metrics data.
 
@@ -371,13 +374,15 @@ I've configured Prometheus to gather **default Go Metrics** from **Go Fiber** an
 # Logging
 This project uses two different methods for logging. One is for local logging with simple print functions and the other is for advanced logging for customers.
 
-### Traditional Logging
+## Traditional Logging
+
 I've used traditional local logging functions for the stuff that only concerns developers.
 
 ![traditional logging](promotions/traditional-logging.png)
 
 ### <img src="promotions/loki-logo.png" width="14"> Loki
-Loki is an open-source log aggregation system developed by Grafana Labs. It is designed to help you collect, store, and query log data from various sources in a scalable and efficient manner. 
+
+Loki is an open-source log aggregation system developed by Grafana Labs. It is designed to help you collect, store, and query log data from various sources in a scalable and efficient manner.
 
 In this project, I used **Loki** for advanced logging. And I used [zap-loki](https://github.com/paul-milne/zap-loki) library for establishing the connection between Go and Loki.
 
@@ -392,38 +397,43 @@ The term load testing is used in different ways in the professional software tes
 
 I've used "Grafana K6" to load test this project. K6 has a very simple interface.
 
-### <img src="promotions/k6-logo.png" width="14"> Using K6
+## <img src="promotions/k6-logo.png" width="14"> Using K6
+
 First, you should create a JavaScript file for K6, as mentioned, named ["scripts/loadtest.js"](scripts/loadtest.js).
 
 This script, using the framework provided by K6, allows you to quickly send load requests to your web application. You can also perform checks on responses using the functions provided by K6.
 
 K6 is originally designed to export metrics to a data source called InfluxDB. However, you can obtain output for Prometheus using the experimental [Prometheus Remote Write](https://k6.io/docs/results-output/real-time/prometheus-remote-write/) module.
 
-### Monitoring Test Results
+## Monitoring Test Results
+
 The output obtained from Prometheus can be visualized using the Grafana interface, as explained in the "Monitoring" section.
 
 ![loadtest monitoring](promotions/loadtest.png)
 
 # API
 
-* [Endpoints](#endpoints) /api/
-* [User Endpoints](#user-endpoints) /api/user/
-* [User Wallet Endpoints: ](#user-wallet-endpoints) /api/user/wallet/
+- [Endpoints](#endpoints) /api/
+- [User Endpoints](#user-endpoints) /api/user/
+- [User Wallet Endpoints:](#user-wallet-endpoints) /api/user/wallet/
 
-### Endpoints
+## Endpoints
 
 <!-- Currencies -->
+
+### Uncategorised Endpoints
 
 <details>
 <summary style="font-size: 1.5em;">
 <code>GET</code> <code>/api/exchange-rates/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Lists the crypto currency exchange rates.
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "currency": "USD",
@@ -436,6 +446,7 @@ Lists the crypto currency exchange rates.
         ...
 }
 ```
+
 </details>
 
 ### User Endpoints
@@ -447,17 +458,19 @@ Lists the crypto currency exchange rates.
 <code>POST</code> <code>/api/user/login/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Returns auth token if matching credentials provided.
 
-##### Parameters
+#### Parameters
+
 | Name     | Type   | Description  |
 |----------|--------|--------------|
 | mail     | string | Mail address |
 | password | string | Password     |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "status": true,
@@ -474,12 +487,14 @@ Returns auth token if matching credentials provided.
 <code>POST</code> <code>/api/user/register/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Creates a new account if provided details are appropriate.
 If verification code is not provided, it will try to send a verification code to the mail address provided.
 If the bool named "verificationSent" in response data is true, you must have received the mail address.
 
-##### Parameters
+#### Parameters
+
 | Name         | Type   | Description       |
 |--------------|--------|-------------------|
 | name         | string | First name        |
@@ -488,14 +503,15 @@ If the bool named "verificationSent" in response data is true, you must have rec
 | password     | string | Password          |
 | verification | string | Verification code |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "status": true,
     "message": "OK!",
 }
 ```
+
 </details>
 
 <!-- Me -->
@@ -505,14 +521,16 @@ If the bool named "verificationSent" in response data is true, you must have rec
 <code>GET</code> <code>/api/user/me/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Returns user information.
 
-##### Parameters
+#### Parameters
+
 Auth required
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "id": 1,
@@ -521,6 +539,7 @@ Auth required
     "name": "Yahya"
 }
 ```
+
 </details>
 
 ### User Wallet Endpoints
@@ -532,20 +551,21 @@ Auth required
 <code>GET</code> <code>/api/user/wallet/balance/</code>
 </summary>
 
-##### Description    
+#### Description
 Returns user balance.
 
-##### Parameters
+#### Parameters
 Auth required
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "BTC": 40990.47869000058,
     "USD": 995270.5766880848
 }
 ```
+
 </details>
 
 <!-- Deposit -->
@@ -555,18 +575,20 @@ Auth required
 <code>POST</code> <code>/api/user/wallet/deposit/</code>
 </summary>
 
-##### Description    
+#### Description
+
 A money deposit endpoint. Virtual POS not implemented. It's just a prototype.
 
-##### Parameters
+#### Parameters
+
 Auth required
 
 | Name   | Type  | Description                 |
 |--------|-------|-----------------------------|
 | amount | float | Amount of money to deposit. |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "status": true,
@@ -574,6 +596,7 @@ Auth required
     "message": "OK",
 }
 ```
+
 </details>
 
 <!-- Withdraw -->
@@ -583,18 +606,20 @@ Auth required
 <code>POST</code> <code>/api/user/wallet/withdraw/</code>
 </summary>
 
-##### Description    
+#### Description
+
 A money withdraw endpoint.
 
-##### Parameters
+#### Parameters
+
 Auth required
 
 | Name   | Type  | Description                  |
 |--------|-------|------------------------------|
 | amount | float | Amount of money to withdraw. |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "status": true,
@@ -602,6 +627,7 @@ Auth required
     "message": "OK",
 }
 ```
+
 </details>
 
 <!-- Buy -->
@@ -611,10 +637,12 @@ Auth required
 <code>POST</code> <code>/api/user/wallet/buy/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Performs a crypto purchase and returns success or failure depending on the result.
 
-##### Parameters
+#### Parameters
+
 Auth required
 
 | Name     | Type   | Description              |
@@ -622,8 +650,8 @@ Auth required
 | amount   | float  | Amount of crypto to buy. |
 | currency | string | Currency to buy          |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "message": "OK!",
@@ -638,6 +666,7 @@ Auth required
     "bought_currency": "BTC",
 }
 ```
+
 </details>
 
 <!-- Buy -->
@@ -647,10 +676,12 @@ Auth required
 <code>POST</code> <code>/api/user/wallet/sell/</code>
 </summary>
 
-##### Description    
+#### Description
+
 Performs a crypto selling and returns success or failure depending on the result.
 
-##### Parameters
+#### Parameters
+
 Auth required
 
 | Name     | Type   | Description               |
@@ -658,8 +689,8 @@ Auth required
 | amount   | float  | Amount of crypto to sell. |
 | currency | string | Currency to sell.         |
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "message": "OK!",
@@ -674,6 +705,7 @@ Auth required
     "sold_currency": "BTC",
 }
 ```
+
 </details>
 
 # Websocket
@@ -685,11 +717,12 @@ Auth required
 <code>WS</code> <code>/ws/exchange-rates</code>
 </summary>
 
-##### Description    
+#### Description
+
 Returns exchange-rates as it changed.
 
-##### Response
-    
+#### Response
+
 ```json
 {
     "currency": "USD",
@@ -702,9 +735,11 @@ Returns exchange-rates as it changed.
         ...
 }
 ```
+
 </details>
 
 # Copyright
+
 This project is licensed under the terms of the MIT License.
 
 You are free to use this project in compliance with the MIT License. If you decide to use, modify, or redistribute this software, you must include a copy of the original license and copyright notice in all copies or substantial portions of the software.
