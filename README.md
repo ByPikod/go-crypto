@@ -9,7 +9,7 @@
 ![Stars](https://img.shields.io/github/stars/ByPikod/go-crypto.svg?style=for-the-badge)
 ![Watchers](https://img.shields.io/github/watchers/ByPikod/go-crypto.svg?style=for-the-badge)
 
-This project is the back-end prototype of a crypto wallet application I developed with the Go programming language during my internship at [ProxoLab](https://www.proxolab.com/) company.
+This project is the back-end prototype of a crypto wallet application I developed with the Go programming language during my internship at [NetAdım](https://www.netadim.com/) company.
 
 I would also like to mention that I learned the Go programming language alongside this project. Additionally, this project allowed me to learn various DevOps concepts.
 
